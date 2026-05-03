@@ -152,7 +152,7 @@ function BookingPanel({property}){
       fetch(APPS_SCRIPT_URL,{
         method:"POST",
         mode:"no-cors",
-        headers:{"Content-Type":"application/json"},
+        headers:{"Content-Type":"text/plain"},
         body:JSON.stringify({
           property:  property.name,
           checkIn:   checkIn.toISOString(),
