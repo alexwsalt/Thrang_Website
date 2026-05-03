@@ -149,21 +149,16 @@ function BookingPanel({property}){
         guest_phone: form.phone||"—",
         message:    form.message||"—",
       },EMAILJS_PUBLIC_KEY);
-      fetch(APPS_SCRIPT_URL,{
-        method:"POST",
-        mode:"no-cors",
-        headers:{"Content-Type":"text/plain"},
-        body:JSON.stringify({
-          property:  property.name,
-          checkIn:   checkIn.toISOString(),
-          checkOut:  checkOut.toISOString(),
-          nights:    nights,
-          guestName:  form.name,
-          guestEmail: form.email,
-          guestPhone: form.phone||"—",
-          message:   form.message||"—",
-        }),
-      }).catch(()=>{});
+      const iframe=document.createElement("iframe");
+      iframe.name="gs_iframe";iframe.style.display="none";
+      document.body.appendChild(iframe);
+      const fields={property:property.name,checkIn:checkIn.toISOString(),checkOut:checkOut.toISOString(),nights:String(nights),guestName:form.name,guestEmail:form.email,guestPhone:form.phone||"—",message:form.message||"—"};
+      const htmlForm=document.createElement("form");
+      htmlForm.method="POST";htmlForm.action=APPS_SCRIPT_URL;htmlForm.target="gs_iframe";htmlForm.style.display="none";
+      Object.entries(fields).forEach(([k,v])=>{const i=document.createElement("input");i.type="hidden";i.name=k;i.value=v;htmlForm.appendChild(i);});
+      document.body.appendChild(htmlForm);
+      htmlForm.submit();
+      setTimeout(()=>{document.body.removeChild(htmlForm);document.body.removeChild(iframe);},5000);
       setSubmitted(true);
     }catch(e){
       setError("Sorry, your request couldn't be sent. Please try again or contact us directly.");
