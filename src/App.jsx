@@ -20,8 +20,8 @@ const C = {
   white: "#ffffff", fog: "#f0f5f9", mist: "#e8f1f7",
   err: "#c0392b", errBg: "#fdf0ee", errBorder: "#e8c4bc",
 };
-const FF = "'Playfair Display', Georgia, serif";
-const FB = "'Source Serif 4', Georgia, serif";
+const FF = "'Cormorant Garamond', Georgia, serif";
+const FB = "'Inter', system-ui, sans-serif";
 
 const ACCESS_PASSWORD = "sunshine2024";
 const PROPERTIES = {
@@ -264,7 +264,7 @@ export default function App(){
   return(
     <div style={{fontFamily:FB,background:C.slate50,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap');
         *{box-sizing:border-box;}
         button{transition:opacity 0.15s,box-shadow 0.15s;}
         button:hover{opacity:0.88;}
@@ -275,7 +275,7 @@ export default function App(){
       <header style={{background:"rgba(244,248,251,0.96)",backdropFilter:"blur(12px)",borderBottom:`1px solid ${C.slate200}`,position:"sticky",top:0,zIndex:100}}>
         <div style={{maxWidth:1100,margin:"0 auto",padding:"0 28px",display:"flex",alignItems:"center",justifyContent:"space-between",height:58}}>
           <div onClick={()=>setPage("home")} style={{cursor:"pointer",display:"flex",alignItems:"center",gap:9}}>
-            <div style={{width:30,height:30,borderRadius:"50%",background:`linear-gradient(135deg,${C.lake600},${C.slate700})`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,color:"#fff"}}>⌂</div>
+            <div style={{width:30,height:30,borderRadius:"50%",background:`linear-gradient(135deg,${C.lake600},${C.slate700})`,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontFamily:FF,fontSize:16,fontWeight:700,letterSpacing:"-0.5px"}}>T</div>
             <span style={{fontSize:19,fontWeight:700,letterSpacing:"-0.5px",color:C.slate800,fontFamily:FF}}>Thrang</span>
           </div>
           <nav style={{display:"flex",gap:6,alignItems:"center"}}>
@@ -296,7 +296,7 @@ export default function App(){
               <div style={{position:"absolute",inset:0,background:"linear-gradient(160deg,rgba(30,42,53,0.72) 0%,rgba(26,82,118,0.55) 100%)"}}/>
               <div style={{position:"relative",textAlign:"center",color:"#fff",padding:"60px 24px",maxWidth:680}}>
                 <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(255,255,255,0.1)",backdropFilter:"blur(6px)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:20,padding:"6px 16px",marginBottom:28,fontSize:11,letterSpacing:"0.22em",textTransform:"uppercase",fontFamily:FB}}>
-                  📍 Great Langdale Valley, Lake District
+                  Great Langdale Valley, Lake District
                 </div>
                 <h1 style={{fontSize:80,fontWeight:700,margin:"0 0 14px",letterSpacing:"-3px",lineHeight:0.95,fontFamily:FF}}>Thrang</h1>
                 <p style={{fontSize:18,opacity:0.82,marginBottom:44,fontStyle:"italic",lineHeight:1.55,fontFamily:FF}}>Two exceptional properties in the heart of the Lakeland fells</p>
@@ -336,13 +336,13 @@ export default function App(){
             </section>
 
             {/* Feature strip */}
-            <section style={{background:C.white,borderBottom:`1px solid ${C.slate200}`,padding:"36px 24px"}}>
-              <div style={{maxWidth:860,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:24}}>
-                {[["🏔️","Direct fell access","Step outside onto some of England's finest walking routes."],["🔑","Private bookings only","Exclusive use — the whole property is yours for your stay."],["🛖","Authentic Lakeland","Original stone walls, oak beams, and wood-burning stoves."]].map(([icon,title,desc])=>(
-                  <div key={title} style={{textAlign:"center",padding:"8px 16px"}}>
-                    <div style={{fontSize:26,marginBottom:10}}>{icon}</div>
-                    <div style={{fontSize:14,fontWeight:700,color:C.slate700,marginBottom:6,fontFamily:FF}}>{title}</div>
-                    <div style={{fontSize:13,color:C.slate400,lineHeight:1.65,fontFamily:FB}}>{desc}</div>
+            <section style={{background:C.white,borderTop:`1px solid ${C.slate200}`,borderBottom:`1px solid ${C.slate200}`,padding:"48px 24px"}}>
+              <div style={{maxWidth:860,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:0}}>
+                {[["Direct fell access","Step outside onto some of England's finest walking routes."],["Private bookings only","Exclusive use — the whole property is yours for your stay."],["Authentic Lakeland","Original stone walls, oak beams, and wood-burning stoves."]].map(([title,desc],i)=>(
+                  <div key={title} style={{textAlign:"center",padding:"8px 32px",borderLeft:i>0?`1px solid ${C.slate200}`:"none"}}>
+                    <div style={{width:32,height:1,background:C.lake500,margin:"0 auto 16px"}}/>
+                    <div style={{fontSize:15,fontWeight:600,color:C.slate800,marginBottom:8,fontFamily:FF,letterSpacing:"0.02em"}}>{title}</div>
+                    <div style={{fontSize:13,color:C.slate500,lineHeight:1.7,fontFamily:FB}}>{desc}</div>
                   </div>
                 ))}
               </div>
@@ -363,8 +363,8 @@ export default function App(){
         {page==="login"&&(
           <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"calc(100vh - 120px)",padding:"40px 24px"}}>
             <div style={{background:C.white,borderRadius:20,padding:"52px 44px",maxWidth:420,width:"100%",boxShadow:`0 8px 48px rgba(30,42,53,0.12)`,border:`1px solid ${C.slate200}`,textAlign:"center"}}>
-              <div style={{width:56,height:56,borderRadius:"50%",background:C.mist,border:`1px solid ${C.slate200}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,margin:"0 auto 20px"}}>🔒</div>
-              <h2 style={{fontSize:26,fontWeight:700,marginBottom:8,color:C.slate800,fontFamily:FF}}>Private Access</h2>
+              <div style={{width:40,height:1,background:C.lake500,margin:"0 auto 28px"}}/>
+              <h2 style={{fontSize:26,fontWeight:600,marginBottom:8,color:C.slate800,fontFamily:FF}}>Private Access</h2>
               <p style={{fontSize:14,color:C.slate400,marginBottom:28,lineHeight:1.65,fontFamily:FB}}>Enter the password shared with you to access the booking portal.</p>
               <input type="password" placeholder="Enter access password" value={password}
                 onChange={e=>setPassword(e.target.value)} onKeyDown={e=>e.key==="Enter"&&login()}
@@ -372,7 +372,7 @@ export default function App(){
               {pwError&&<p style={{color:C.err,fontSize:13,marginBottom:10,fontFamily:FB}}>{pwError}</p>}
               <button onClick={login} style={{width:"100%",background:C.lake600,color:"#fff",border:"none",padding:"14px",borderRadius:10,cursor:"pointer",fontSize:16,fontFamily:FF,fontWeight:700,marginBottom:14,boxShadow:`0 3px 16px ${C.lake300}`}}>Enter →</button>
               <button onClick={()=>setPage("home")} style={{background:"none",border:"none",color:C.slate400,cursor:"pointer",fontSize:13,fontFamily:FB}}>← Back to home</button>
-              <p style={{fontSize:11,color:C.slate300,marginTop:16,fontFamily:FB}}>💡 Demo: <code style={{background:C.fog,padding:"2px 6px",borderRadius:4,color:C.slate600}}>sunshine2024</code></p>
+              <p style={{fontSize:11,color:C.slate300,marginTop:16,fontFamily:FB}}>Demo: <code style={{background:C.fog,padding:"2px 6px",borderRadius:4,color:C.slate600}}>sunshine2024</code></p>
             </div>
           </div>
         )}
