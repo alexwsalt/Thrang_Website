@@ -110,7 +110,7 @@ function DateChip({label,value}){
   );
 }
 
-function BookingPanel({property}){
+function BookingPanel({property,onBooked}){
   const [checkIn,setCheckIn]=useState(null);
   const [checkOut,setCheckOut]=useState(null);
   const [hover,setHover]=useState(null);
@@ -144,6 +144,7 @@ function BookingPanel({property}){
       const params=new URLSearchParams({property:property.name,checkIn:checkIn.toISOString(),checkOut:checkOut.toISOString(),nights:String(nights),guestName:form.name,guestEmail:form.email,guestPhone:form.phone||"—",message:form.message||"—"});
       const img=new Image();
       img.src=APPS_SCRIPT_URL+"?"+params.toString();
+      onBooked(property.id,checkIn,checkOut);
       setSubmitted(true);
     }catch(e){
       setError("Sorry, your request couldn't be sent. Please try again or contact us directly.");
@@ -248,7 +249,7 @@ function BookingPage(){
         </div>
       </div>
       <div style={{background:C.white,borderRadius:18,padding:"36px 40px",border:`1px solid ${C.slate200}`,boxShadow:`0 4px 32px rgba(30,42,53,0.07)`}}>
-        <BookingPanel key={active} property={p}/>
+        <BookingPanel key={active} property={p} onBooked={(id,start,end)=>setBookedRanges(r=>({...r,[id]:[...r[id],{start,end}]}))} />
       </div>
     </div>
   );
