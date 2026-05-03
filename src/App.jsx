@@ -1,4 +1,9 @@
 import { useState, useEffect } from "react";
+import emailjs from "@emailjs/browser";
+
+const EMAILJS_SERVICE_ID  = "service_b61kixm";
+const EMAILJS_TEMPLATE_ID = "template_q6a0wlh";
+const EMAILJS_PUBLIC_KEY  = "6vEKWVX3Kkv60HK8N";
 
 const C = {
   slate900: "#1e2a35", slate800: "#243040", slate700: "#2f3f52",
@@ -118,6 +123,7 @@ function BookingPanel({property}){
   const [hover,setHover]=useState(null);
   const [form,setForm]=useState({name:"",email:"",phone:"",message:""});
   const [submitted,setSubmitted]=useState(false);
+  const [sending,setSending]=useState(false);
   const [error,setError]=useState("");
   const handleSelect=date=>{
     if(!checkIn||(checkIn&&checkOut)){setCheckIn(date);setCheckOut(null);return;}
@@ -127,10 +133,27 @@ function BookingPanel({property}){
     setError("");setCheckIn(s);setCheckOut(e);
   };
   const nights=nightsBetween(checkIn,checkOut);
-  const handleSubmit=()=>{
+  const handleSubmit=async()=>{
     if(!checkIn||!checkOut){setError("Please select check-in and check-out dates.");return;}
     if(!form.name||!form.email){setError("Please enter your name and email address.");return;}
-    setError("");setSubmitted(true);
+    setError("");setSending(true);
+    try{
+      await emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{
+        property:   property.name,
+        check_in:   formatDate(checkIn),
+        check_out:  formatDate(checkOut),
+        nights:     nights,
+        guest_name:  form.name,
+        guest_email: form.email,
+        guest_phone: form.phone||"—",
+        message:    form.message||"—",
+      },EMAILJS_PUBLIC_KEY);
+      setSubmitted(true);
+    }catch(e){
+      setError("Sorry, your request couldn't be sent. Please try again or contact us directly.");
+    }finally{
+      setSending(false);
+    }
   };
   const reset=()=>{setSubmitted(false);setCheckIn(null);setCheckOut(null);setForm({name:"",email:"",phone:"",message:""});};
   const inp={padding:"12px 14px",border:`1.5px solid ${C.slate200}`,borderRadius:8,fontSize:15,fontFamily:FB,color:C.slate800,background:C.fog,outline:"none",width:"100%",boxSizing:"border-box"};
@@ -172,8 +195,8 @@ function BookingPanel({property}){
           </div>
         ))}
       </div>
-      <button onClick={handleSubmit} style={{background:C.lake600,color:"#fff",border:"none",padding:"15px 42px",borderRadius:10,cursor:"pointer",fontSize:16,fontFamily:FF,fontWeight:700,letterSpacing:"0.03em",boxShadow:`0 4px 18px ${C.lake300}`}}>
-        Request Booking →
+      <button onClick={handleSubmit} disabled={sending} style={{background:sending?C.slate600:C.lake600,color:"#fff",border:"none",padding:"15px 42px",borderRadius:10,cursor:sending?"not-allowed":"pointer",fontSize:16,fontFamily:FF,fontWeight:700,letterSpacing:"0.03em",boxShadow:`0 4px 18px ${C.lake300}`,transition:"background 0.2s"}}>
+        {sending?"Sending…":"Request Booking →"}
       </button>
     </div>
   );
