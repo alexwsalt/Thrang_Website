@@ -24,19 +24,11 @@ const PROPERTIES = {
     id: "oldThrang", name: "Old Thrang", sleeps: 7,
     tagline: "A traditional Lakeland farmhouse for up to 7 guests",
     description: "Old Thrang is a beautifully restored Lakeland farmhouse nestled in the Great Langdale Valley. With original stone walls, oak beams, and a wood-burning stove, it blends rustic charm with modern comfort — the perfect retreat for a group looking to escape to the fells.",
-    bookedRanges: [
-      { start: new Date(2026,4,10), end: new Date(2026,4,17) },
-      { start: new Date(2026,5,5),  end: new Date(2026,5,12) },
-    ],
   },
   thrangGarth: {
     id: "thrangGarth", name: "Thrang Garth", sleeps: 11,
     tagline: "A spacious Lakeland retreat for up to 11 guests",
     description: "Thrang Garth is a generous, characterful property perfect for larger groups seeking the very best of the Lake District. Set within the stunning Great Langdale Valley, it offers ample space, beautiful interiors, and direct access to some of the finest walking in England.",
-    bookedRanges: [
-      { start: new Date(2026,4,20), end: new Date(2026,4,27) },
-      { start: new Date(2026,5,15), end: new Date(2026,5,22) },
-    ],
   },
 };
 
@@ -149,16 +141,9 @@ function BookingPanel({property}){
         guest_phone: form.phone||"—",
         message:    form.message||"—",
       },EMAILJS_PUBLIC_KEY);
-      const iframe=document.createElement("iframe");
-      iframe.name="gs_iframe";iframe.style.display="none";
-      document.body.appendChild(iframe);
-      const fields={property:property.name,checkIn:checkIn.toISOString(),checkOut:checkOut.toISOString(),nights:String(nights),guestName:form.name,guestEmail:form.email,guestPhone:form.phone||"—",message:form.message||"—"};
-      const htmlForm=document.createElement("form");
-      htmlForm.method="POST";htmlForm.action=APPS_SCRIPT_URL;htmlForm.target="gs_iframe";htmlForm.style.display="none";
-      Object.entries(fields).forEach(([k,v])=>{const i=document.createElement("input");i.type="hidden";i.name=k;i.value=v;htmlForm.appendChild(i);});
-      document.body.appendChild(htmlForm);
-      htmlForm.submit();
-      setTimeout(()=>{document.body.removeChild(htmlForm);document.body.removeChild(iframe);},5000);
+      const params=new URLSearchParams({property:property.name,checkIn:checkIn.toISOString(),checkOut:checkOut.toISOString(),nights:String(nights),guestName:form.name,guestEmail:form.email,guestPhone:form.phone||"—",message:form.message||"—"});
+      const img=new Image();
+      img.src=APPS_SCRIPT_URL+"?"+params.toString();
       setSubmitted(true);
     }catch(e){
       setError("Sorry, your request couldn't be sent. Please try again or contact us directly.");
@@ -215,7 +200,26 @@ function BookingPanel({property}){
 
 function BookingPage(){
   const [active,setActive]=useState("oldThrang");
-  const p=PROPERTIES[active];
+  const [bookedRanges,setBookedRanges]=useState({oldThrang:[],thrangGarth:[]});
+  useEffect(()=>{
+    const cbName="__gcal_"+Date.now();
+    window[cbName]=(events)=>{
+      const ranges={oldThrang:[],thrangGarth:[]};
+      events.forEach(ev=>{
+        const range={start:new Date(ev.start),end:new Date(ev.end)};
+        if(ev.title.indexOf("Old Thrang")!==-1) ranges.oldThrang.push(range);
+        else if(ev.title.indexOf("Thrang Garth")!==-1) ranges.thrangGarth.push(range);
+      });
+      setBookedRanges(ranges);
+      delete window[cbName];
+    };
+    const s=document.createElement("script");
+    s.src=APPS_SCRIPT_URL+"?action=getEvents&callback="+cbName;
+    s.onerror=()=>delete window[cbName];
+    document.head.appendChild(s);
+    return()=>{try{document.head.removeChild(s);}catch(_){}};
+  },[]);
+  const p={...PROPERTIES[active],bookedRanges:bookedRanges[active]||[]};
   return(
     <div style={{maxWidth:880,margin:"0 auto",padding:"48px 28px",fontFamily:FB}}>
       <div style={{marginBottom:36}}>
