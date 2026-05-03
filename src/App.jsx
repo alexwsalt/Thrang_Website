@@ -1,5 +1,10 @@
 import { useState, useEffect } from "react";
 import emailjs from "@emailjs/browser";
+import imgOldThrang from "./assets/Old Thrang Back.jpg";
+import imgThrangGarth from "./assets/Thrang Garth Back.jpg";
+import imgFrontBoth from "./assets/Front Both.jpg";
+
+const PROPERTY_IMAGES = { oldThrang: imgOldThrang, thrangGarth: imgThrangGarth };
 
 const EMAILJS_SERVICE_ID  = "service_b61kixm";
 const EMAILJS_TEMPLATE_ID = "template_q6a0wlh";
@@ -257,6 +262,7 @@ function BookingPage(){
 
 export default function App(){
   const [page,setPage]=useState("home");
+  const [homeActive,setHomeActive]=useState("oldThrang");
   const [password,setPassword]=useState("");
   const [pwError,setPwError]=useState("");
   const [mounted,setMounted]=useState(false);
@@ -295,29 +301,47 @@ export default function App(){
         {/* HOME */}
         {page==="home"&&(
           <div style={{opacity:mounted?1:0,transition:"opacity 0.55s"}}>
-            <section style={{position:"relative",minHeight:580,display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
-              <div style={{position:"absolute",inset:0,background:`linear-gradient(160deg, ${C.slate900} 0%, ${C.slate800} 45%, ${C.lake700} 100%)`}}/>
-              <div style={{position:"absolute",inset:0,backgroundImage:`radial-gradient(ellipse at 20% 80%, rgba(31,99,144,0.4) 0%, transparent 55%), radial-gradient(ellipse at 80% 20%, rgba(46,94,120,0.2) 0%, transparent 50%)`,pointerEvents:"none"}}/>
-              <svg style={{position:"absolute",bottom:0,left:0,right:0,width:"100%",opacity:0.07}} viewBox="0 0 1200 200" preserveAspectRatio="none">
-                <path d="M0,200 L0,120 L150,60 L300,100 L500,20 L700,90 L900,30 L1100,80 L1200,50 L1200,200Z" fill="#fff"/>
-              </svg>
+            <section style={{position:"relative",minHeight:520,display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
+              <img src={imgFrontBoth} alt="Thrang" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}/>
+              <div style={{position:"absolute",inset:0,background:"linear-gradient(160deg,rgba(30,42,53,0.72) 0%,rgba(26,82,118,0.55) 100%)"}}/>
               <div style={{position:"relative",textAlign:"center",color:"#fff",padding:"60px 24px",maxWidth:680}}>
                 <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(255,255,255,0.1)",backdropFilter:"blur(6px)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:20,padding:"6px 16px",marginBottom:28,fontSize:11,letterSpacing:"0.22em",textTransform:"uppercase",fontFamily:FB}}>
                   📍 Great Langdale Valley, Lake District
                 </div>
                 <h1 style={{fontSize:80,fontWeight:700,margin:"0 0 14px",letterSpacing:"-3px",lineHeight:0.95,fontFamily:FF}}>Thrang</h1>
-                <p style={{fontSize:18,opacity:0.72,marginBottom:44,fontStyle:"italic",lineHeight:1.55,fontFamily:FF}}>Two exceptional properties in the heart of the Lakeland fells</p>
-                <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:16,marginBottom:44,flexWrap:"wrap"}}>
-                  {[["Old Thrang","Sleeps 7"],["Thrang Garth","Sleeps 11"]].map(([n,s],i)=>(
-                    <div key={i} style={{background:"rgba(255,255,255,0.1)",backdropFilter:"blur(10px)",borderRadius:12,padding:"14px 24px",border:"1px solid rgba(255,255,255,0.15)"}}>
-                      <div style={{fontSize:15,fontWeight:600,marginBottom:3,fontFamily:FF}}>{n}</div>
-                      <div style={{fontSize:12,opacity:0.65,fontFamily:FB}}>{s}</div>
-                    </div>
-                  ))}
-                </div>
+                <p style={{fontSize:18,opacity:0.82,marginBottom:44,fontStyle:"italic",lineHeight:1.55,fontFamily:FF}}>Two exceptional properties in the heart of the Lakeland fells</p>
                 <button onClick={()=>setPage("login")} style={{background:"#fff",color:C.slate800,border:"none",padding:"16px 44px",borderRadius:30,cursor:"pointer",fontSize:16,fontFamily:FF,fontWeight:700,letterSpacing:"0.04em",boxShadow:"0 4px 20px rgba(0,0,0,0.25)"}}>
                   Request a Stay →
                 </button>
+              </div>
+            </section>
+
+            {/* Property showcase */}
+            <section style={{background:C.white,padding:"60px 24px"}}>
+              <div style={{maxWidth:1000,margin:"0 auto"}}>
+                <div style={{display:"flex",gap:12,marginBottom:32,justifyContent:"center"}}>
+                  {Object.values(PROPERTIES).map(prop=>{
+                    const sel=homeActive===prop.id;
+                    return(
+                      <button key={prop.id} onClick={()=>setHomeActive(prop.id)} style={{padding:"11px 32px",border:`2px solid ${sel?C.lake500:C.slate200}`,borderRadius:30,background:sel?C.lake600:C.white,color:sel?C.white:C.slate700,cursor:"pointer",fontFamily:FF,fontSize:15,fontWeight:600,transition:"all 0.2s",boxShadow:sel?`0 2px 14px ${C.lake300}`:"none"}}>
+                        {prop.name}
+                      </button>
+                    );
+                  })}
+                </div>
+                <div style={{position:"relative",borderRadius:20,overflow:"hidden",height:480,boxShadow:`0 8px 40px rgba(30,42,53,0.18)`}}>
+                  <img key={homeActive} src={PROPERTY_IMAGES[homeActive]} alt={PROPERTIES[homeActive].name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
+                  <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,transparent 35%,rgba(30,42,53,0.85))"}}/>
+                  <div style={{position:"absolute",bottom:36,left:40,right:40,color:"#fff"}}>
+                    <p style={{fontSize:11,letterSpacing:"0.22em",textTransform:"uppercase",opacity:0.65,marginBottom:8,fontFamily:FB}}>Great Langdale Valley · Lake District</p>
+                    <h2 style={{fontSize:36,fontWeight:700,margin:"0 0 10px",fontFamily:FF}}>{PROPERTIES[homeActive].name}</h2>
+                    <p style={{fontSize:15,opacity:0.85,margin:"0 0 22px",fontFamily:FB,maxWidth:580,lineHeight:1.7}}>{PROPERTIES[homeActive].description}</p>
+                    <div style={{display:"flex",alignItems:"center",gap:14,flexWrap:"wrap"}}>
+                      <span style={{background:"rgba(255,255,255,0.15)",backdropFilter:"blur(8px)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:20,padding:"6px 18px",fontSize:13,fontFamily:FB}}>Sleeps {PROPERTIES[homeActive].sleeps}</span>
+                      <button onClick={()=>setPage("login")} style={{background:"#fff",color:C.slate800,border:"none",padding:"10px 28px",borderRadius:20,cursor:"pointer",fontSize:14,fontFamily:FF,fontWeight:700,boxShadow:"0 2px 12px rgba(0,0,0,0.2)"}}>Request a Stay →</button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </section>
 
