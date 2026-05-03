@@ -4,6 +4,7 @@ import emailjs from "@emailjs/browser";
 const EMAILJS_SERVICE_ID  = "service_b61kixm";
 const EMAILJS_TEMPLATE_ID = "template_q6a0wlh";
 const EMAILJS_PUBLIC_KEY  = "6vEKWVX3Kkv60HK8N";
+const APPS_SCRIPT_URL     = "https://script.google.com/macros/s/AKfycbw4isc3SUKhUmPkpRvQYet5WZ-PYd0An-VbOY6rKyUmRJjCVNbgw-_W9IwPJQc3A1ZN/exec";
 
 const C = {
   slate900: "#1e2a35", slate800: "#243040", slate700: "#2f3f52",
@@ -148,6 +149,21 @@ function BookingPanel({property}){
         guest_phone: form.phone||"—",
         message:    form.message||"—",
       },EMAILJS_PUBLIC_KEY);
+      fetch(APPS_SCRIPT_URL,{
+        method:"POST",
+        mode:"no-cors",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          property:  property.name,
+          checkIn:   checkIn.toISOString(),
+          checkOut:  checkOut.toISOString(),
+          nights:    nights,
+          guestName:  form.name,
+          guestEmail: form.email,
+          guestPhone: form.phone||"—",
+          message:   form.message||"—",
+        }),
+      }).catch(()=>{});
       setSubmitted(true);
     }catch(e){
       setError("Sorry, your request couldn't be sent. Please try again or contact us directly.");
