@@ -171,35 +171,34 @@ function BookingPanel({property,onBooked}){
     </div>
   );
   return(
-    <div>
-      <p style={{fontSize:15,color:C.slate600,lineHeight:1.8,marginBottom:24,fontFamily:FB}}>{property.description}</p>
-      <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16,flexWrap:"wrap"}}>
-        <DateChip label="Check-in"  value={checkIn}/>
-        <div style={{color:C.slate300,fontSize:18}}>→</div>
-        <DateChip label="Check-out" value={checkOut}/>
-        {nights>0&&<div style={{background:C.lake600,color:"#fff",borderRadius:20,padding:"7px 16px",fontSize:13,fontWeight:600,fontFamily:FB,marginLeft:4,boxShadow:`0 2px 12px ${C.lake300}`}}>{nights} night{nights!==1?"s":""}</div>}
+    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:32,alignItems:"start"}}>
+      {/* Left: calendar */}
+      <div>
+        <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12,flexWrap:"wrap"}}>
+          <DateChip label="Check-in"  value={checkIn}/>
+          <div style={{color:C.slate300,fontSize:16}}>→</div>
+          <DateChip label="Check-out" value={checkOut}/>
+          {nights>0&&<div style={{background:C.lake600,color:"#fff",borderRadius:20,padding:"5px 13px",fontSize:12,fontWeight:600,fontFamily:FB,boxShadow:`0 2px 10px ${C.lake300}`}}>{nights} night{nights!==1?"s":""}</div>}
+        </div>
+        <p style={{fontSize:11,color:C.slate400,marginBottom:10,fontFamily:FB}}>Click a start date, then an end date.</p>
+        <div style={{background:C.white,border:`1px solid ${C.slate200}`,borderRadius:12,padding:16,boxShadow:`0 1px 6px rgba(30,42,53,0.05)`}}>
+          <Calendar checkIn={checkIn} checkOut={checkOut} onSelectDate={handleSelect} hoverDate={hover} onHoverDate={setHover} bookedRanges={property.bookedRanges}/>
+        </div>
+        {error&&<div style={{background:C.errBg,border:`1px solid ${C.errBorder}`,borderRadius:8,padding:"9px 14px",fontSize:12,color:C.err,marginTop:12,fontFamily:FB}}>{error}</div>}
       </div>
-      <p style={{fontSize:12,color:C.slate400,marginBottom:16,fontFamily:FB}}>Click a start date, then click an end date to select your stay.</p>
-      <div style={{background:C.white,border:`1px solid ${C.slate200}`,borderRadius:14,padding:24,marginBottom:24,boxShadow:`0 1px 6px rgba(30,42,53,0.05)`}}>
-        <Calendar checkIn={checkIn} checkOut={checkOut} onSelectDate={handleSelect} hoverDate={hover} onHoverDate={setHover} bookedRanges={property.bookedRanges}/>
-      </div>
-      {error&&<div style={{background:C.errBg,border:`1px solid ${C.errBorder}`,borderRadius:8,padding:"11px 16px",fontSize:13,color:C.err,marginBottom:20,fontFamily:FB}}>{error}</div>}
-      <div style={{display:"flex",alignItems:"center",gap:12,margin:"28px 0 24px"}}>
-        <div style={{flex:1,height:1,background:C.slate200}}/>
-        <span style={{fontSize:10,color:C.slate400,letterSpacing:"0.18em",textTransform:"uppercase",fontFamily:FB}}>Your Details</span>
-        <div style={{flex:1,height:1,background:C.slate200}}/>
-      </div>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:"16px 20px",marginBottom:28}}>
+      {/* Right: form */}
+      <div style={{display:"flex",flexDirection:"column",gap:14}}>
+        <p style={{fontSize:11,fontWeight:700,color:C.slate400,letterSpacing:"0.18em",textTransform:"uppercase",fontFamily:FB,margin:0}}>Your Details</p>
         {[{label:"Full Name *",key:"name",type:"text",ph:"Jane Smith"},{label:"Email Address *",key:"email",type:"email",ph:"jane@email.com"},{label:"Phone Number",key:"phone",type:"text",ph:"+44 7700 000000"},{label:"Message",key:"message",type:"area",ph:"Any questions or special requests…"}].map(({label,key,type,ph})=>(
           <div key={key} style={{display:"flex",flexDirection:"column"}}>
             <label style={lbl}>{label}</label>
-            {type==="area"?<textarea placeholder={ph} value={form[key]} onChange={e=>setForm(f=>({...f,[key]:e.target.value}))} style={{...inp,height:82,resize:"vertical"}}/>:<input type={type} placeholder={ph} value={form[key]} onChange={e=>setForm(f=>({...f,[key]:e.target.value}))} style={inp}/>}
+            {type==="area"?<textarea placeholder={ph} value={form[key]} onChange={e=>setForm(f=>({...f,[key]:e.target.value}))} style={{...inp,height:72,resize:"vertical"}}/>:<input type={type} placeholder={ph} value={form[key]} onChange={e=>setForm(f=>({...f,[key]:e.target.value}))} style={inp}/>}
           </div>
         ))}
+        <button onClick={handleSubmit} disabled={sending} style={{background:sending?C.slate600:C.lake600,color:"#fff",border:"none",padding:"13px 32px",borderRadius:10,cursor:sending?"not-allowed":"pointer",fontSize:15,fontFamily:FF,fontWeight:700,letterSpacing:"0.03em",boxShadow:`0 4px 18px ${C.lake300}`,transition:"background 0.2s",marginTop:4}}>
+          {sending?"Sending…":"Request Booking →"}
+        </button>
       </div>
-      <button onClick={handleSubmit} disabled={sending} style={{background:sending?C.slate600:C.lake600,color:"#fff",border:"none",padding:"15px 42px",borderRadius:10,cursor:sending?"not-allowed":"pointer",fontSize:16,fontFamily:FF,fontWeight:700,letterSpacing:"0.03em",boxShadow:`0 4px 18px ${C.lake300}`,transition:"background 0.2s"}}>
-        {sending?"Sending…":"Request Booking →"}
-      </button>
     </div>
   );
 }
@@ -227,33 +226,24 @@ function BookingPage(){
   },[]);
   const p={...PROPERTIES[active],bookedRanges:bookedRanges[active]||[]};
   return(
-    <div style={{maxWidth:880,margin:"0 auto",padding:"48px 28px",fontFamily:FB}}>
-      <div style={{marginBottom:36}}>
-        <p style={{fontSize:11,letterSpacing:"0.22em",textTransform:"uppercase",color:C.slate400,marginBottom:8,fontFamily:FB}}>Great Langdale Valley · Lake District</p>
-        <h1 style={{fontSize:34,fontWeight:700,color:C.slate800,margin:0,fontFamily:FF,letterSpacing:"-0.5px"}}>Choose your property</h1>
-      </div>
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14,marginBottom:36}}>
-        {Object.values(PROPERTIES).map(prop=>{
-          const sel=active===prop.id;
-          return(
-            <button key={prop.id} onClick={()=>setActive(prop.id)} style={{padding:"18px 22px",border:`2px solid ${sel?C.lake500:C.slate200}`,borderRadius:14,background:sel?C.lake600:C.white,color:sel?C.white:C.slate700,cursor:"pointer",fontFamily:FB,transition:"all 0.2s",textAlign:"left",boxShadow:sel?`0 4px 20px ${C.lake300}`:"none"}}>
-              <div style={{fontSize:17,fontWeight:700,marginBottom:4,fontFamily:FF}}>{prop.name}</div>
-              <div style={{fontSize:13,opacity:0.75}}>Sleeps {prop.sleeps}</div>
-            </button>
-          );
-        })}
-      </div>
-      <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",marginBottom:28,paddingBottom:24,borderBottom:`1px solid ${C.slate200}`}}>
+    <div style={{maxWidth:960,margin:"0 auto",padding:"28px 28px",fontFamily:FB}}>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
         <div>
-          <h2 style={{fontSize:26,fontWeight:700,color:C.slate800,margin:"0 0 5px",fontFamily:FF}}>{p.name}</h2>
-          <p style={{fontSize:14,color:C.slate400,fontStyle:"italic",margin:0,fontFamily:FB}}>{p.tagline}</p>
+          <h1 style={{fontSize:24,fontWeight:700,color:C.slate800,margin:0,fontFamily:FF}}>{p.name}</h1>
+          <p style={{fontSize:13,color:C.slate400,fontStyle:"italic",margin:"3px 0 0",fontFamily:FB}}>{p.tagline}</p>
         </div>
-        <div style={{textAlign:"center",background:C.mist,border:`1px solid ${C.slate200}`,borderRadius:12,padding:"12px 22px",flexShrink:0}}>
-          <div style={{fontSize:28,fontWeight:700,color:C.lake600,lineHeight:1,fontFamily:FF}}>{p.sleeps}</div>
-          <div style={{fontSize:10,color:C.slate400,letterSpacing:"0.15em",textTransform:"uppercase",fontFamily:FB}}>guests</div>
+        <div style={{display:"flex",gap:10}}>
+          {Object.values(PROPERTIES).map(prop=>{
+            const sel=active===prop.id;
+            return(
+              <button key={prop.id} onClick={()=>setActive(prop.id)} style={{padding:"8px 20px",border:`2px solid ${sel?C.lake500:C.slate200}`,borderRadius:20,background:sel?C.lake600:C.white,color:sel?C.white:C.slate700,cursor:"pointer",fontFamily:FB,fontSize:13,fontWeight:600,transition:"all 0.2s",boxShadow:sel?`0 2px 12px ${C.lake300}`:"none"}}>
+                {prop.name} · Sleeps {prop.sleeps}
+              </button>
+            );
+          })}
         </div>
       </div>
-      <div style={{background:C.white,borderRadius:18,padding:"36px 40px",border:`1px solid ${C.slate200}`,boxShadow:`0 4px 32px rgba(30,42,53,0.07)`}}>
+      <div style={{background:C.white,borderRadius:16,padding:"24px 28px",border:`1px solid ${C.slate200}`,boxShadow:`0 4px 32px rgba(30,42,53,0.07)`}}>
         <BookingPanel key={active} property={p} onBooked={(id,start,end)=>setBookedRanges(r=>({...r,[id]:[...r[id],{start,end}]}))} />
       </div>
     </div>
