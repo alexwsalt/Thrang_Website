@@ -1,15 +1,11 @@
 import { useState, useEffect } from "react";
-import emailjs from "@emailjs/browser";
 import imgOldThrang from "./assets/Old Thrang Back.jpg";
 import imgThrangGarth from "./assets/Thrang Garth Back.jpg";
 import imgFrontBoth from "./assets/Front Both.jpg";
 
 const PROPERTY_IMAGES = { oldThrang: imgOldThrang, thrangGarth: imgThrangGarth };
 
-const EMAILJS_SERVICE_ID  = "service_b61kixm";
-const EMAILJS_TEMPLATE_ID = "template_q6a0wlh";
-const EMAILJS_PUBLIC_KEY  = "6vEKWVX3Kkv60HK8N";
-const APPS_SCRIPT_URL     = "https://script.google.com/macros/s/AKfycbw4isc3SUKhUmPkpRvQYet5WZ-PYd0An-VbOY6rKyUmRJjCVNbgw-_W9IwPJQc3A1ZN/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw4isc3SUKhUmPkpRvQYet5WZ-PYd0An-VbOY6rKyUmRJjCVNbgw-_W9IwPJQc3A1ZN/exec";
 
 const C = {
   slate900: "#1e2a35", slate800: "#243040", slate700: "#2f3f52",
@@ -20,8 +16,8 @@ const C = {
   white: "#ffffff", fog: "#f0f5f9", mist: "#e8f1f7",
   err: "#c0392b", errBg: "#fdf0ee", errBorder: "#e8c4bc",
 };
-const FF = "'Montserrat', sans-serif";
-const FB = "'Montserrat', sans-serif";
+const FF = "'Playfair Display', Georgia, serif";
+const FB = "'Source Serif 4', Georgia, serif";
 
 const ACCESS_PASSWORD = "sunshine2024";
 const PROPERTIES = {
@@ -44,6 +40,7 @@ function isInRange(date,start,end){
   return n(date)>=n(start)&&n(date)<=n(end);
 }
 function isBooked(date,ranges){ return ranges.some(r=>isInRange(date,r.start,r.end)); }
+function isPending(date,ranges){ return ranges&&ranges.some(r=>isInRange(date,r.start,r.end)); }
 function isPast(date){ const t=new Date();t.setHours(0,0,0,0);const d=new Date(date);d.setHours(0,0,0,0);return d<t; }
 function formatDate(d){ if(!d)return""; return d.toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"}); }
 function nightsBetween(a,b){ if(!a||!b)return 0; return Math.round(Math.abs((b-a)/(1000*60*60*24))); }
@@ -52,7 +49,7 @@ function getFirstDay(y,m){ return new Date(y,m,1).getDay(); }
 const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DAYS=["Su","Mo","Tu","We","Th","Fr","Sa"];
 
-function Calendar({checkIn,checkOut,onSelectDate,hoverDate,onHoverDate,bookedRanges}){
+function Calendar({checkIn,checkOut,onSelectDate,hoverDate,onHoverDate,bookedRanges,pendingRanges}){
   const today=new Date();
   const [vy,setVy]=useState(today.getFullYear());
   const [vm,setVm]=useState(today.getMonth());
@@ -74,7 +71,7 @@ function Calendar({checkIn,checkOut,onSelectDate,hoverDate,onHoverDate,bookedRan
       <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:3}}>
         {cells.map((date,i)=>{
           if(!date)return<div key={"e"+i}/>;
-          const booked=isBooked(date,bookedRanges),past=isPast(date),dis=booked||past;
+          const booked=isBooked(date,bookedRanges),past=isPast(date),pending=isPending(date,pendingRanges),dis=booked||past;
           const isStart=checkIn&&isSameDay(date,checkIn),isEnd=checkOut&&isSameDay(date,checkOut);
           const inRng=checkIn&&rangeEnd&&!isSameDay(checkIn,rangeEnd)&&isInRange(date,checkIn<rangeEnd?checkIn:rangeEnd,checkIn<rangeEnd?rangeEnd:checkIn);
           const isTdy=isSameDay(date,today);
@@ -82,19 +79,21 @@ function Calendar({checkIn,checkOut,onSelectDate,hoverDate,onHoverDate,bookedRan
           if(dis){bg=booked?"#fde8e4":C.slate100;col=booked?"#c0705a":C.slate300;cur="not-allowed";op=booked?1:0.5;}
           else if(isStart||isEnd){bg=C.lake600;col="#fff";fw=700;brd=`1px solid ${C.lake600}`;}
           else if(inRng){bg=C.lake100;col=C.lake700;}
+          else if(pending){bg:"#fff4e0";col="#b06800";}
           else if(isTdy){brd=`2px solid ${C.lake500}`;col=C.lake600;fw=700;}
           return(
             <div key={date.toString()} onClick={()=>!dis&&onSelectDate(date)}
               onMouseEnter={()=>!dis&&onHoverDate(date)} onMouseLeave={()=>onHoverDate(null)}
-              style={{aspectRatio:"1",display:"flex",alignItems:"center",justifyContent:"center",borderRadius:6,background:bg,color:col,cursor:cur,border:brd,fontWeight:fw,fontSize:13,position:"relative",transition:"all 0.1s",opacity:op}}>
+              style={{aspectRatio:"1",display:"flex",alignItems:"center",justifyContent:"center",borderRadius:6,background:pending&&!dis&&!isStart&&!isEnd&&!inRng?"#fff4e0":bg,color:pending&&!dis&&!isStart&&!isEnd&&!inRng?"#b06800":col,cursor:cur,border:brd,fontWeight:fw,fontSize:13,position:"relative",transition:"all 0.1s",opacity:op}}>
               {date.getDate()}
               {booked&&<div style={{position:"absolute",bottom:2,left:"50%",transform:"translateX(-50%)",width:3,height:3,borderRadius:"50%",background:"#c0705a"}}/>}
+              {pending&&!dis&&<div style={{position:"absolute",bottom:2,left:"50%",transform:"translateX(-50%)",width:3,height:3,borderRadius:"50%",background:"#b06800"}}/>}
             </div>
           );
         })}
       </div>
       <div style={{display:"flex",gap:14,marginTop:14,flexWrap:"wrap"}}>
-        {[[C.fog,"Available"],[C.lake100,"In range"],[C.lake600,"Selected"],["#fde8e4","Unavailable"]].map(([bg,label])=>(
+        {[[C.fog,"Available"],[C.lake100,"In range"],[C.lake600,"Selected"],["#fde8e4","Unavailable"],["#fff4e0","Pending"]].map(([bg,label])=>(
           <div key={label} style={{display:"flex",alignItems:"center",gap:5,fontSize:11,color:C.slate400}}>
             <div style={{width:11,height:11,borderRadius:3,background:bg,border:`1px solid ${C.slate200}`}}/>
             {label}
@@ -121,7 +120,6 @@ function BookingPanel({property,onBooked}){
   const [hover,setHover]=useState(null);
   const [form,setForm]=useState({name:"",email:"",phone:"",message:""});
   const [submitted,setSubmitted]=useState(false);
-  const [sending,setSending]=useState(false);
   const [error,setError]=useState("");
   const handleSelect=date=>{
     if(!checkIn||(checkIn&&checkOut)){setCheckIn(date);setCheckOut(null);return;}
@@ -131,31 +129,15 @@ function BookingPanel({property,onBooked}){
     setError("");setCheckIn(s);setCheckOut(e);
   };
   const nights=nightsBetween(checkIn,checkOut);
-  const handleSubmit=async()=>{
+  const handleSubmit=()=>{
     if(!checkIn||!checkOut){setError("Please select check-in and check-out dates.");return;}
     if(!form.name||!form.email){setError("Please enter your name and email address.");return;}
-    setError("");setSending(true);
-    try{
-      await emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{
-        property:   property.name,
-        check_in:   formatDate(checkIn),
-        check_out:  formatDate(checkOut),
-        nights:     nights,
-        guest_name:  form.name,
-        guest_email: form.email,
-        guest_phone: form.phone||"—",
-        message:    form.message||"—",
-      },EMAILJS_PUBLIC_KEY);
-      const params=new URLSearchParams({property:property.name,checkIn:checkIn.toISOString(),checkOut:checkOut.toISOString(),nights:String(nights),guestName:form.name,guestEmail:form.email,guestPhone:form.phone||"—",message:form.message||"—"});
-      const img=new Image();
-      img.src=APPS_SCRIPT_URL+"?"+params.toString();
-      onBooked(property.id,checkIn,checkOut);
-      setSubmitted(true);
-    }catch(e){
-      setError("Sorry, your request couldn't be sent. Please try again or contact us directly.");
-    }finally{
-      setSending(false);
-    }
+    setError("");
+    const params=new URLSearchParams({property:property.name,checkIn:checkIn.toISOString(),checkOut:checkOut.toISOString(),nights:String(nights),guestName:form.name,guestEmail:form.email,guestPhone:form.phone||"—",message:form.message||"—"});
+    const img=new Image();
+    img.src=APPS_SCRIPT_URL+"?"+params.toString();
+    onBooked(property.id,checkIn,checkOut);
+    setSubmitted(true);
   };
   const reset=()=>{setSubmitted(false);setCheckIn(null);setCheckOut(null);setForm({name:"",email:"",phone:"",message:""});};
   const inp={padding:"12px 14px",border:`1.5px solid ${C.slate200}`,borderRadius:8,fontSize:15,fontFamily:FB,color:C.slate800,background:C.fog,outline:"none",width:"100%",boxSizing:"border-box"};
@@ -182,7 +164,7 @@ function BookingPanel({property,onBooked}){
         </div>
         <p style={{fontSize:11,color:C.slate400,marginBottom:10,fontFamily:FB}}>Click a start date, then an end date.</p>
         <div style={{background:C.white,border:`1px solid ${C.slate200}`,borderRadius:12,padding:16,boxShadow:`0 1px 6px rgba(30,42,53,0.05)`}}>
-          <Calendar checkIn={checkIn} checkOut={checkOut} onSelectDate={handleSelect} hoverDate={hover} onHoverDate={setHover} bookedRanges={property.bookedRanges}/>
+          <Calendar checkIn={checkIn} checkOut={checkOut} onSelectDate={handleSelect} hoverDate={hover} onHoverDate={setHover} bookedRanges={property.bookedRanges} pendingRanges={property.pendingRanges}/>
         </div>
         {error&&<div style={{background:C.errBg,border:`1px solid ${C.errBorder}`,borderRadius:8,padding:"9px 14px",fontSize:12,color:C.err,marginTop:12,fontFamily:FB}}>{error}</div>}
       </div>
@@ -195,8 +177,8 @@ function BookingPanel({property,onBooked}){
             {type==="area"?<textarea placeholder={ph} value={form[key]} onChange={e=>setForm(f=>({...f,[key]:e.target.value}))} style={{...inp,height:72,resize:"vertical"}}/>:<input type={type} placeholder={ph} value={form[key]} onChange={e=>setForm(f=>({...f,[key]:e.target.value}))} style={inp}/>}
           </div>
         ))}
-        <button onClick={handleSubmit} disabled={sending} style={{background:sending?C.slate600:C.lake600,color:"#fff",border:"none",padding:"13px 32px",borderRadius:10,cursor:sending?"not-allowed":"pointer",fontSize:15,fontFamily:FF,fontWeight:700,letterSpacing:"0.03em",boxShadow:`0 4px 18px ${C.lake300}`,transition:"background 0.2s",marginTop:4}}>
-          {sending?"Sending…":"Request Booking →"}
+        <button onClick={handleSubmit} style={{background:C.lake600,color:"#fff",border:"none",padding:"13px 32px",borderRadius:10,cursor:"pointer",fontSize:15,fontFamily:FF,fontWeight:700,letterSpacing:"0.03em",boxShadow:`0 4px 18px ${C.lake300}`,marginTop:4}}>
+          Request Booking →
         </button>
       </div>
     </div>
@@ -205,17 +187,22 @@ function BookingPanel({property,onBooked}){
 
 function BookingPage(){
   const [active,setActive]=useState("oldThrang");
-  const [bookedRanges,setBookedRanges]=useState({oldThrang:[],thrangGarth:[]});
+  const [confirmedRanges,setConfirmedRanges]=useState({oldThrang:[],thrangGarth:[]});
+  const [pendingRanges,setPendingRanges]=useState({oldThrang:[],thrangGarth:[]});
   useEffect(()=>{
     const cbName="__gcal_"+Date.now();
     window[cbName]=(events)=>{
-      const ranges={oldThrang:[],thrangGarth:[]};
+      const confirmed={oldThrang:[],thrangGarth:[]};
+      const pending={oldThrang:[],thrangGarth:[]};
       events.forEach(ev=>{
         const range={start:new Date(ev.start),end:new Date(ev.end)};
-        if(ev.title.indexOf("Old Thrang")!==-1) ranges.oldThrang.push(range);
-        else if(ev.title.indexOf("Thrang Garth")!==-1) ranges.thrangGarth.push(range);
+        const key=ev.title.indexOf("Old Thrang")!==-1?"oldThrang":ev.title.indexOf("Thrang Garth")!==-1?"thrangGarth":null;
+        if(!key)return;
+        if(ev.status==="confirmed") confirmed[key].push(range);
+        else pending[key].push(range);
       });
-      setBookedRanges(ranges);
+      setConfirmedRanges(confirmed);
+      setPendingRanges(pending);
       delete window[cbName];
     };
     const s=document.createElement("script");
@@ -224,9 +211,9 @@ function BookingPage(){
     document.head.appendChild(s);
     return()=>{try{document.head.removeChild(s);}catch(_){}};
   },[]);
-  const p={...PROPERTIES[active],bookedRanges:bookedRanges[active]||[]};
+  const p={...PROPERTIES[active],bookedRanges:confirmedRanges[active]||[],pendingRanges:pendingRanges[active]||[]};
   return(
-    <div style={{maxWidth:960,margin:"0 auto",padding:"28px 28px",fontFamily:FB}}>
+    <div className="booking-portal" style={{maxWidth:960,margin:"0 auto",padding:"28px 28px",fontFamily:FB}}>
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
         <div>
           <h1 style={{fontSize:24,fontWeight:700,color:C.slate800,margin:0,fontFamily:FF}}>{p.name}</h1>
@@ -244,7 +231,7 @@ function BookingPage(){
         </div>
       </div>
       <div style={{background:C.white,borderRadius:16,padding:"24px 28px",border:`1px solid ${C.slate200}`,boxShadow:`0 4px 32px rgba(30,42,53,0.07)`}}>
-        <BookingPanel key={active} property={p} onBooked={(id,start,end)=>setBookedRanges(r=>({...r,[id]:[...r[id],{start,end}]}))} />
+        <BookingPanel key={active} property={p} onBooked={(id,start,end)=>setPendingRanges(r=>({...r,[id]:[...r[id],{start,end}]}))} />
       </div>
     </div>
   );
@@ -264,11 +251,12 @@ export default function App(){
   return(
     <div style={{fontFamily:FB,background:C.slate50,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,400&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap');
         *{box-sizing:border-box;}
         button{transition:opacity 0.15s,box-shadow 0.15s;}
         button:hover{opacity:0.88;}
         input:focus,textarea:focus{border-color:#2471a3!important;}
+        .booking-portal,.booking-portal *{font-family:'Montserrat',sans-serif!important;}
       `}</style>
 
       {/* HEADER */}
