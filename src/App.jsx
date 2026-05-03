@@ -20,8 +20,8 @@ const C = {
   white: "#ffffff", fog: "#f0f5f9", mist: "#e8f1f7",
   err: "#c0392b", errBg: "#fdf0ee", errBorder: "#e8c4bc",
 };
-const FF = "'Cormorant Garamond', Georgia, serif";
-const FB = "'Inter', system-ui, sans-serif";
+const FF = "'Montserrat', sans-serif";
+const FB = "'Montserrat', sans-serif";
 
 const ACCESS_PASSWORD = "sunshine2024";
 const PROPERTIES = {
@@ -264,7 +264,7 @@ export default function App(){
   return(
     <div style={{fontFamily:FB,background:C.slate50,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Inter:wght@300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&display=swap');
         *{box-sizing:border-box;}
         button{transition:opacity 0.15s,box-shadow 0.15s;}
         button:hover{opacity:0.88;}
