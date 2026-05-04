@@ -31,6 +31,7 @@ const PROPERTIES = {
       { name: "Bedroom 2", beds: "2 single beds" },
       { name: "Bedroom 3", beds: "1 single bed" },
     ],
+    pricing: { winter: 675, summer: 810, weekend: 450 },
   },
   thrangGarth: {
     id: "thrangGarth", name: "Thrang Garth", sleeps: 11,
@@ -43,22 +44,24 @@ const PROPERTIES = {
       { name: "Bedroom 3", beds: "¾ double bed" },
       { name: "Bedroom 4", beds: "5 single beds" },
     ],
+    pricing: { winter: 850, summer: 1040, weekend: 500 },
   },
 };
 
 const SHARED_AMENITIES = [
-  { icon: "wifi",    label: "Free WiFi" },
-  { icon: "kitchen", label: "Self-catering kitchen" },
-  { icon: "dish",    label: "Dishwasher" },
-  { icon: "micro",   label: "Microwave" },
-  { icon: "fridge",  label: "Fridge / freezer" },
-  { icon: "tv",      label: "Television" },
-  { icon: "heat",    label: "Central heating" },
-  { icon: "garden",  label: "Large private garden" },
-  { icon: "pets",    label: "Pets welcome" },
-  { icon: "excl",    label: "Exclusive private use" },
+  { label: "Free WiFi" },
+  { label: "Self-catering kitchen" },
+  { label: "Dishwasher" },
+  { label: "Microwave" },
+  { label: "Fridge / freezer" },
+  { label: "Television" },
+  { label: "Central heating" },
+  { label: "Large private garden" },
+  { label: "Pets welcome" },
+  { label: "Exclusive private use" },
 ];
 
+/* ─── Helpers ───────────────────────────────────────────────────────────── */
 function isSameDay(a,b){ return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate(); }
 function isInRange(date,start,end){
   if(!start||!end)return false;
@@ -75,6 +78,33 @@ function getFirstDay(y,m){ return new Date(y,m,1).getDay(); }
 const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DAYS=["Su","Mo","Tu","We","Th","Fr","Sa"];
 
+/* ─── Pricing card ──────────────────────────────────────────────────────── */
+function PricingCard({ pricing }) {
+  const tiers = [
+    { label: "Winter",  sub: "Nov – Mar", price: pricing.winter,  note: "per week" },
+    { label: "Summer",  sub: "Apr – Oct", price: pricing.summer,  note: "per week" },
+    { label: "Weekend", sub: "Fri – Mon", price: pricing.weekend, note: "per stay" },
+  ];
+  return (
+    <div style={{background:C.white,border:`1px solid ${C.slate200}`,borderRadius:16,padding:"22px 28px",boxShadow:`0 4px 32px rgba(30,42,53,0.07)`,marginBottom:20}}>
+      <div style={{display:"flex",alignItems:"baseline",justifyContent:"space-between",marginBottom:16,flexWrap:"wrap",gap:6}}>
+        <p style={{fontSize:11,fontWeight:700,color:C.slate400,letterSpacing:"0.18em",textTransform:"uppercase",margin:0}}>Rates</p>
+        <p style={{fontSize:11,color:C.slate400,margin:0}}>Weekly stays run Saturday to Saturday</p>
+      </div>
+      <div className="pricing-grid">
+        {tiers.map(({label,sub,price,note})=>(
+          <div key={label} style={{background:C.fog,borderRadius:12,padding:"16px 20px",borderTop:`3px solid ${C.lake500}`}}>
+            <div style={{fontSize:12,fontWeight:700,color:C.lake700,letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:2}}>{label}</div>
+            <div style={{fontSize:11,color:C.slate400,marginBottom:10}}>{sub}</div>
+            <div style={{fontSize:28,fontWeight:700,color:C.slate800,fontFamily:FF,lineHeight:1}}>£{price.toLocaleString()}</div>
+            <div style={{fontSize:11,color:C.slate400,marginTop:4}}>{note}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ─── Shared portal header row ─────────────────────────────────────────── */
 function PortalHeader({ active, setActive, prop }) {
   return (
@@ -83,7 +113,7 @@ function PortalHeader({ active, setActive, prop }) {
         <h1 style={{fontSize:24,fontWeight:700,color:C.slate800,margin:0,fontFamily:FF}}>{prop.name}</h1>
         <p style={{fontSize:13,color:C.slate400,fontStyle:"italic",margin:"3px 0 0",fontFamily:FB}}>{prop.tagline}</p>
       </div>
-      <div style={{display:"flex",gap:10}}>
+      <div className="prop-btn-group">
         {Object.values(PROPERTIES).map(p=>{
           const sel=active===p.id;
           return(
@@ -157,7 +187,7 @@ function Calendar({checkIn,checkOut,onSelectDate,hoverDate,onHoverDate,bookedRan
 function DateChip({label,value}){
   const filled=!!value;
   return(
-    <div style={{background:filled?C.mist:C.fog,border:`1.5px solid ${filled?C.lake300:C.slate200}`,borderRadius:10,padding:"10px 18px",minWidth:148,transition:"all 0.2s"}}>
+    <div style={{background:filled?C.mist:C.fog,border:`1.5px solid ${filled?C.lake300:C.slate200}`,borderRadius:10,padding:"10px 18px",minWidth:130,transition:"all 0.2s"}}>
       <div style={{fontSize:9,letterSpacing:"0.18em",color:C.slate400,fontWeight:700,marginBottom:3,textTransform:"uppercase",fontFamily:FB}}>{label}</div>
       <div style={{fontSize:15,fontWeight:600,color:filled?C.slate800:C.slate300,fontFamily:FB}}>{filled?formatDate(value):"—"}</div>
     </div>
@@ -204,7 +234,7 @@ function BookingPanel({property,onBooked,onReset}){
     </div>
   );
   return(
-    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:32,alignItems:"start"}}>
+    <div className="booking-grid">
       {/* Left: calendar */}
       <div>
         <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12,flexWrap:"wrap"}}>
@@ -280,8 +310,9 @@ function BookingPage({active,setActive}){
 
   const p={...PROPERTIES[active],bookedRanges:confirmedRanges[active]||[],pendingRanges:pendingRanges[active]||[]};
   return(
-    <div className="booking-portal" style={{maxWidth:960,margin:"0 auto",padding:"28px 28px",fontFamily:FB}}>
+    <div className="booking-portal" style={{maxWidth:960,margin:"0 auto",padding:"24px 16px",fontFamily:FB}}>
       <PortalHeader active={active} setActive={setActive} prop={p}/>
+      <PricingCard pricing={p.pricing}/>
       <div style={{background:C.white,borderRadius:16,padding:"24px 28px",border:`1px solid ${C.slate200}`,boxShadow:`0 4px 32px rgba(30,42,53,0.07)`}}>
         <BookingPanel key={active} property={p}
           onBooked={(id,start,end)=>setPendingRanges(r=>({...r,[id]:[...r[id],{start,end}]}))}
@@ -297,10 +328,10 @@ function InfoPage({active,setActive}){
   const card={background:C.white,borderRadius:14,padding:"22px 24px",border:`1px solid ${C.slate200}`,boxShadow:`0 2px 14px rgba(30,42,53,0.06)`};
   const sectionTitle={fontSize:11,fontWeight:700,color:C.slate400,letterSpacing:"0.18em",textTransform:"uppercase",fontFamily:FB,marginBottom:16,paddingBottom:10,borderBottom:`1px solid ${C.slate100}`,display:"block"};
   return(
-    <div className="booking-portal" style={{maxWidth:960,margin:"0 auto",padding:"28px 28px"}}>
+    <div className="booking-portal" style={{maxWidth:960,margin:"0 auto",padding:"24px 16px"}}>
       <PortalHeader active={active} setActive={setActive} prop={p}/>
 
-      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:20,marginBottom:20}}>
+      <div className="info-card-grid" style={{marginBottom:20}}>
         {/* Overview card */}
         <div style={card}>
           <span style={sectionTitle}>Property Overview</span>
@@ -314,7 +345,7 @@ function InfoPage({active,setActive}){
             ].map(([label,value])=>(
               <div key={label} style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",borderBottom:`1px solid ${C.slate100}`,paddingBottom:10}}>
                 <span style={{fontSize:13,color:C.slate500,fontFamily:FB}}>{label}</span>
-                <span style={{fontSize:13,fontWeight:600,color:C.slate800,fontFamily:FB}}>{value}</span>
+                <span style={{fontSize:13,fontWeight:600,color:C.slate800,fontFamily:FB,textAlign:"right",maxWidth:"55%"}}>{value}</span>
               </div>
             ))}
           </div>
@@ -337,7 +368,7 @@ function InfoPage({active,setActive}){
       {/* Amenities card — full width */}
       <div style={card}>
         <span style={sectionTitle}>Amenities</span>
-        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(180px,1fr))",gap:12}}>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(170px,1fr))",gap:10}}>
           {SHARED_AMENITIES.map(({label})=>(
             <div key={label} style={{display:"flex",alignItems:"center",gap:10,background:C.fog,borderRadius:8,padding:"10px 14px"}}>
               <div style={{width:7,height:7,borderRadius:"50%",background:C.lake500,flexShrink:0}}/>
@@ -363,15 +394,13 @@ function CameraIcon({size=28,color="currentColor"}){
 
 /* ─── Gallery page ──────────────────────────────────────────────────────── */
 function GalleryPage({active,setActive}){
-  const [lightbox,setLightbox]=useState(null); // null = closed, number = open index
+  const [lightbox,setLightbox]=useState(null);
   const p=PROPERTIES[active];
   const PLACEHOLDER_COUNT=12;
   const total=PLACEHOLDER_COUNT;
 
-  // Close lightbox when property changes
   useEffect(()=>{ setLightbox(null); },[active]);
 
-  // Keyboard navigation
   useEffect(()=>{
     if(lightbox===null)return;
     const handler=(e)=>{
@@ -384,15 +413,14 @@ function GalleryPage({active,setActive}){
   },[lightbox,total]);
 
   return(
-    <div className="booking-portal" style={{maxWidth:960,margin:"0 auto",padding:"28px 28px"}}>
+    <div className="booking-portal" style={{maxWidth:960,margin:"0 auto",padding:"24px 16px"}}>
       <PortalHeader active={active} setActive={setActive} prop={p}/>
 
       <div style={{background:C.white,borderRadius:16,padding:"24px 28px",border:`1px solid ${C.slate200}`,boxShadow:`0 4px 32px rgba(30,42,53,0.07)`}}>
         <p style={{fontSize:11,fontWeight:700,color:C.slate400,letterSpacing:"0.18em",textTransform:"uppercase",fontFamily:FB,margin:"0 0 20px"}}>Photo Gallery — {p.name}</p>
 
-        {/* Scroll container */}
         <div style={{overflowY:"auto",maxHeight:560,paddingRight:4}}>
-          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14}}>
+          <div className="gallery-grid">
             {Array.from({length:PLACEHOLDER_COUNT},(_,i)=>(
               <div key={i} onClick={()=>setLightbox(i)}
                 style={{aspectRatio:"4/3",background:C.slate100,borderRadius:10,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8,border:`1px solid ${C.slate200}`,color:C.slate300,cursor:"pointer",transition:"all 0.15s"}}
@@ -406,37 +434,26 @@ function GalleryPage({active,setActive}){
         </div>
       </div>
 
-      {/* Lightbox overlay */}
       {lightbox!==null&&(
         <div onClick={()=>setLightbox(null)}
           style={{position:"fixed",inset:0,background:"rgba(15,22,30,0.93)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}>
-
-          {/* Close button */}
           <button onClick={()=>setLightbox(null)}
             style={{position:"absolute",top:20,right:24,background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:"50%",width:44,height:44,cursor:"pointer",color:"#fff",fontSize:22,display:"flex",alignItems:"center",justifyContent:"center",lineHeight:1}}>
             ×
           </button>
-
-          {/* Counter */}
           <div style={{position:"absolute",top:24,left:"50%",transform:"translateX(-50%)",color:"rgba(255,255,255,0.55)",fontSize:13,fontFamily:FB,letterSpacing:"0.1em"}}>
             {lightbox+1} / {total}
           </div>
-
-          {/* Prev arrow */}
           <button onClick={e=>{e.stopPropagation();setLightbox(i=>(i-1+total)%total);}}
             style={{position:"absolute",left:20,background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:"50%",width:52,height:52,cursor:"pointer",color:"#fff",fontSize:26,display:"flex",alignItems:"center",justifyContent:"center"}}>
             ‹
           </button>
-
-          {/* Image area — stop clicks propagating to backdrop */}
           <div onClick={e=>e.stopPropagation()}
             style={{width:"min(80vw,860px)",aspectRatio:"4/3",background:"rgba(255,255,255,0.04)",borderRadius:12,border:"1px solid rgba(255,255,255,0.1)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:14,color:"rgba(255,255,255,0.3)"}}>
             <CameraIcon size={52} color="rgba(255,255,255,0.2)"/>
             <span style={{fontSize:15,fontFamily:FB,letterSpacing:"0.08em",color:"rgba(255,255,255,0.35)"}}>Photo {lightbox+1} — {p.name}</span>
             <span style={{fontSize:11,fontFamily:FB,color:"rgba(255,255,255,0.2)"}}>Image coming soon</span>
           </div>
-
-          {/* Next arrow */}
           <button onClick={e=>{e.stopPropagation();setLightbox(i=>(i+1)%total);}}
             style={{position:"absolute",right:20,background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:"50%",width:52,height:52,cursor:"pointer",color:"#fff",fontSize:26,display:"flex",alignItems:"center",justifyContent:"center"}}>
             ›
@@ -463,7 +480,6 @@ export default function App(){
     if(password===ACCESS_PASSWORD){setPwError("");setPage("booking");}
     else setPwError("Incorrect password — please try again.");
   };
-  const goPortal=(target)=>inPortal?setPage(target):setPage("login");
   return(
     <div style={{fontFamily:FB,background:C.slate50,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
       <style>{`
@@ -473,11 +489,64 @@ export default function App(){
         button:hover{opacity:0.88;}
         input:focus,textarea:focus{border-color:#2471a3!important;}
         .booking-portal,.booking-portal *{font-family:'Montserrat',sans-serif!important;}
+
+        /* Responsive grids */
+        .booking-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start;}
+        .info-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+        .gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+        .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
+        .prop-btn-group{display:flex;gap:10px;flex-wrap:wrap;}
+
+        @media(max-width:700px){
+          /* Header nav */
+          .portal-nav-btn{padding:6px 10px!important;font-size:12px!important;}
+
+          /* Hero */
+          .hero-title{font-size:52px!important;letter-spacing:-1.5px!important;}
+          .hero-sub{font-size:15px!important;}
+          .hero-section{min-height:400px!important;}
+
+          /* Showcase */
+          .showcase-img{height:320px!important;}
+          .showcase-text h2{font-size:24px!important;}
+          .showcase-text{bottom:16px!important;left:16px!important;right:16px!important;}
+
+          /* Feature strip */
+          .feature-strip-grid{grid-template-columns:1fr!important;}
+          .feature-item{border-left:none!important;border-top:1px solid #d6e4ee;padding-top:24px!important;}
+          .feature-item:first-child{border-top:none;}
+
+          /* Booking */
+          .booking-grid{grid-template-columns:1fr!important;gap:24px!important;}
+
+          /* Pricing */
+          .pricing-grid{grid-template-columns:1fr!important;}
+
+          /* Info */
+          .info-card-grid{grid-template-columns:1fr!important;}
+
+          /* Gallery */
+          .gallery-grid{grid-template-columns:repeat(2,1fr)!important;}
+
+          /* Portal property buttons */
+          .prop-btn-group{width:100%;}
+          .prop-btn-group button{flex:1;text-align:center;}
+
+          /* Login */
+          .login-card{padding:36px 20px!important;}
+
+          /* Portal padding */
+          .booking-panel-card{padding:18px 16px!important;}
+
+          /* Lightbox arrows — tuck inside on small screens */
+          .lb-prev{left:8px!important;}
+          .lb-next{right:8px!important;}
+        }
       `}</style>
 
       {/* HEADER */}
       <header style={{background:"rgba(244,248,251,0.96)",backdropFilter:"blur(12px)",borderBottom:`1px solid ${C.slate200}`,position:"sticky",top:0,zIndex:100}}>
-        <div style={{maxWidth:1100,margin:"0 auto",padding:"0 28px",display:"flex",alignItems:"center",justifyContent:"space-between",height:58}}>
+        <div style={{maxWidth:1100,margin:"0 auto",padding:"0 16px",display:"flex",alignItems:"center",justifyContent:"space-between",height:58}}>
           <div onClick={()=>setPage("home")} style={{cursor:"pointer",display:"flex",alignItems:"center",gap:9}}>
             <div style={{width:30,height:30,borderRadius:"50%",background:`linear-gradient(135deg,${C.lake600},${C.slate700})`,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontFamily:FF,fontSize:16,fontWeight:700,letterSpacing:"-0.5px"}}>T</div>
             <span style={{fontSize:19,fontWeight:700,letterSpacing:"-0.5px",color:C.slate800,fontFamily:FF}}>Thrang</span>
@@ -487,10 +556,10 @@ export default function App(){
             {inPortal?(
               <>
                 {[["info","Info"],["gallery","Gallery"],["booking","Book"]].map(([pg,label])=>{
-                  const active=page===pg;
+                  const isCur=page===pg;
                   return(
-                    <button key={pg} onClick={()=>setPage(pg)}
-                      style={{padding:"7px 16px",border:`1.5px solid ${active?C.lake500:C.slate200}`,borderRadius:20,background:active?C.lake600:C.white,color:active?C.white:C.slate600,cursor:"pointer",fontSize:13,fontFamily:FB,fontWeight:600,transition:"all 0.2s",boxShadow:active?`0 2px 10px ${C.lake300}`:"none"}}>
+                    <button key={pg} onClick={()=>setPage(pg)} className="portal-nav-btn"
+                      style={{padding:"7px 16px",border:`1.5px solid ${isCur?C.lake500:C.slate200}`,borderRadius:20,background:isCur?C.lake600:C.white,color:isCur?C.white:C.slate600,cursor:"pointer",fontSize:13,fontFamily:FB,fontWeight:600,transition:"all 0.2s",boxShadow:isCur?`0 2px 10px ${C.lake300}`:"none"}}>
                       {label}
                     </button>
                   );
@@ -509,15 +578,16 @@ export default function App(){
         {/* HOME */}
         {page==="home"&&(
           <div style={{opacity:mounted?1:0,transition:"opacity 0.55s"}}>
-            <section style={{position:"relative",minHeight:520,display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
+            {/* Hero */}
+            <section className="hero-section" style={{position:"relative",minHeight:520,display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
               <img src={imgFrontBoth} alt="Thrang" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}/>
               <div style={{position:"absolute",inset:0,background:"linear-gradient(160deg,rgba(30,42,53,0.72) 0%,rgba(26,82,118,0.55) 100%)"}}/>
               <div style={{position:"relative",textAlign:"center",color:"#fff",padding:"60px 24px",maxWidth:680}}>
                 <div style={{display:"inline-flex",alignItems:"center",gap:6,background:"rgba(255,255,255,0.1)",backdropFilter:"blur(6px)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:20,padding:"6px 16px",marginBottom:28,fontSize:11,letterSpacing:"0.22em",textTransform:"uppercase",fontFamily:FB}}>
                   Great Langdale Valley, Lake District
                 </div>
-                <h1 style={{fontSize:80,fontWeight:700,margin:"0 0 14px",letterSpacing:"-3px",lineHeight:0.95,fontFamily:FF}}>Thrang</h1>
-                <p style={{fontSize:18,opacity:0.82,marginBottom:44,fontStyle:"italic",lineHeight:1.55,fontFamily:FF}}>Two exceptional properties in the heart of the Lakeland fells</p>
+                <h1 className="hero-title" style={{fontSize:80,fontWeight:700,margin:"0 0 14px",letterSpacing:"-3px",lineHeight:0.95,fontFamily:FF}}>Thrang</h1>
+                <p className="hero-sub" style={{fontSize:18,opacity:0.82,marginBottom:44,fontStyle:"italic",lineHeight:1.55,fontFamily:FF}}>Two exceptional properties in the heart of the Lakeland fells</p>
                 <button onClick={()=>setPage("login")} style={{background:"#fff",color:C.slate800,border:"none",padding:"16px 44px",borderRadius:30,cursor:"pointer",fontSize:16,fontFamily:FF,fontWeight:700,letterSpacing:"0.04em",boxShadow:"0 4px 20px rgba(0,0,0,0.25)"}}>
                   Request a Stay →
                 </button>
@@ -527,7 +597,7 @@ export default function App(){
             {/* Property showcase */}
             <section style={{background:C.white,padding:"60px 24px"}}>
               <div style={{maxWidth:1000,margin:"0 auto"}}>
-                <div style={{display:"flex",gap:12,marginBottom:32,justifyContent:"center"}}>
+                <div style={{display:"flex",gap:12,marginBottom:32,justifyContent:"center",flexWrap:"wrap"}}>
                   {Object.values(PROPERTIES).map(prop=>{
                     const sel=homeActive===prop.id;
                     return(
@@ -537,10 +607,10 @@ export default function App(){
                     );
                   })}
                 </div>
-                <div style={{position:"relative",borderRadius:20,overflow:"hidden",height:480,boxShadow:`0 8px 40px rgba(30,42,53,0.18)`}}>
+                <div className="showcase-img" style={{position:"relative",borderRadius:20,overflow:"hidden",height:480,boxShadow:`0 8px 40px rgba(30,42,53,0.18)`}}>
                   <img key={homeActive} src={PROPERTY_IMAGES[homeActive]} alt={PROPERTIES[homeActive].name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
                   <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,transparent 35%,rgba(30,42,53,0.85))"}}/>
-                  <div style={{position:"absolute",bottom:36,left:40,right:40,color:"#fff"}}>
+                  <div className="showcase-text" style={{position:"absolute",bottom:36,left:40,right:40,color:"#fff"}}>
                     <p style={{fontSize:11,letterSpacing:"0.22em",textTransform:"uppercase",opacity:0.65,marginBottom:8,fontFamily:FB}}>Great Langdale Valley · Lake District</p>
                     <h2 style={{fontSize:36,fontWeight:700,margin:"0 0 10px",fontFamily:FF}}>{PROPERTIES[homeActive].name}</h2>
                     <p style={{fontSize:15,opacity:0.85,margin:"0 0 22px",fontFamily:FB,maxWidth:580,lineHeight:1.7}}>{PROPERTIES[homeActive].description}</p>
@@ -555,9 +625,9 @@ export default function App(){
 
             {/* Feature strip */}
             <section style={{background:C.white,borderTop:`1px solid ${C.slate200}`,borderBottom:`1px solid ${C.slate200}`,padding:"48px 24px"}}>
-              <div style={{maxWidth:860,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:0}}>
+              <div className="feature-strip-grid" style={{maxWidth:860,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:0}}>
                 {[["Direct fell access","Step outside onto some of England's finest walking routes."],["Private bookings only","Exclusive use — the whole property is yours for your stay."],["Authentic Lakeland","Original stone walls, oak beams, and wood-burning stoves."]].map(([title,desc],i)=>(
-                  <div key={title} style={{textAlign:"center",padding:"8px 32px",borderLeft:i>0?`1px solid ${C.slate200}`:"none"}}>
+                  <div key={title} className={`feature-item${i>0?" feature-item":""}`} style={{textAlign:"center",padding:"8px 32px",borderLeft:i>0?`1px solid ${C.slate200}`:"none"}}>
                     <div style={{width:32,height:1,background:C.lake500,margin:"0 auto 16px"}}/>
                     <div style={{fontSize:15,fontWeight:600,color:C.slate800,marginBottom:8,fontFamily:FF,letterSpacing:"0.02em"}}>{title}</div>
                     <div style={{fontSize:13,color:C.slate500,lineHeight:1.7,fontFamily:FB}}>{desc}</div>
@@ -579,8 +649,8 @@ export default function App(){
 
         {/* LOGIN */}
         {page==="login"&&(
-          <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"calc(100vh - 120px)",padding:"40px 24px"}}>
-            <div style={{background:C.white,borderRadius:20,padding:"52px 44px",maxWidth:420,width:"100%",boxShadow:`0 8px 48px rgba(30,42,53,0.12)`,border:`1px solid ${C.slate200}`,textAlign:"center"}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"calc(100vh - 120px)",padding:"40px 16px"}}>
+            <div className="login-card" style={{background:C.white,borderRadius:20,padding:"52px 44px",maxWidth:420,width:"100%",boxShadow:`0 8px 48px rgba(30,42,53,0.12)`,border:`1px solid ${C.slate200}`,textAlign:"center"}}>
               <div style={{width:40,height:1,background:C.lake500,margin:"0 auto 28px"}}/>
               <h2 style={{fontSize:26,fontWeight:600,marginBottom:8,color:C.slate800,fontFamily:FF}}>Private Access</h2>
               <p style={{fontSize:14,color:C.slate400,marginBottom:28,lineHeight:1.65,fontFamily:FB}}>Enter the password shared with you to access the booking portal.</p>
