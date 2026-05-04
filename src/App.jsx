@@ -488,7 +488,7 @@ export default function App(){
             <button onClick={()=>setPage("home")} style={{background:"none",border:"none",cursor:"pointer",padding:"7px 14px",fontSize:14,color:C.slate600,fontFamily:FB}}>Home</button>
             {inPortal?(
               <>
-                {[["booking","Book"],["info","Info"],["gallery","Gallery"]].map(([pg,label])=>{
+                {[["info","Info"],["gallery","Gallery"],["booking","Book"]].map(([pg,label])=>{
                   const active=page===pg;
                   return(
                     <button key={pg} onClick={()=>setPage(pg)}
