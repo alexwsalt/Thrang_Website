@@ -8,12 +8,15 @@ const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw4isc3SUKhUmPk
 
 /* ─── Colour palette ────────────────────────────────────────────────────── */
 const C = {
-  twilight:   "#140D4F",   // Deep Twilight  — primary dark / main text
+  main:       "#3A6480",   // Lake District blue — primary brand / interactive
+  mainD:      "#2a4a5e",   // darker main — footer / deep backgrounds
+
+  twilight:   "#1c2e3d",   // dark text — headings and body (kept dark for readability)
   indigo:     "#34435E",   // Twilight Indigo — secondary text
-  crimson:    "#711009",   // Molten Lava     — primary accent / actions
+  crimson:    "#711009",   // Molten Lava     — heritage accent
   crimsonD:   "#550A07",   // darker crimson
   crimsonBg:  "#FBF0EF",   // crimson tint
-  evergreen:  "#082D0F",   // Evergreen       — supporting dark accent
+  evergreen:  "#082D0F",   // Evergreen       — supporting accent
   frost:      "#A0D2DB",   // Frosted Blue    — light accent / calendar range
   frostBg:    "#EAF4F7",   // frost tint
 
@@ -30,9 +33,11 @@ const C = {
   errBorder:  "#d4b8b8",
 };
 
-/* Cormorant Garamond — display headings (historic old-style typeface)
-   Crimson Pro        — body text (warm, legible at small sizes)
-   Raleway            — portal functional text (clean, slightly aristocratic) */
+/* Cinzel              — hero display heading only (monumental, carved-stone quality)
+   Cormorant Garamond  — all other headings (historic old-style typeface)
+   Crimson Pro         — body text (warm, legible at small sizes)
+   Raleway             — portal functional text (clean, slightly aristocratic) */
+const FH = "'Cinzel', Georgia, serif";               // hero heading only
 const FF = "'Cormorant Garamond', Georgia, serif";   // headings
 const FB = "'Crimson Pro', Georgia, serif";           // body
 
@@ -147,9 +152,9 @@ function PropertyTabs({ active, setActive }){
         return(
           <button key={p.id} onClick={()=>setActive(p.id)} style={{
             padding:"8px 22px",
-            border:`1px solid ${sel ? C.twilight : C.stone}`,
+            border:`1px solid ${sel ? C.main : C.stone}`,
             borderBottom:`2px solid ${sel ? C.crimson : C.stone}`,
-            background: sel ? C.twilight : C.white,
+            background: sel ? C.main : C.white,
             color: sel ? C.white : C.indigo,
             cursor:"pointer",
             fontFamily:FB,
@@ -311,7 +316,7 @@ function BookingPanel({property,onBooked,onReset}){
             {type==="area"?<textarea placeholder={ph} value={form[key]} onChange={e=>setForm(f=>({...f,[key]:e.target.value}))} style={{...inp,height:80,resize:"vertical"}}/>:<input type={type} placeholder={ph} value={form[key]} onChange={e=>setForm(f=>({...f,[key]:e.target.value}))} style={inp}/>}
           </div>
         ))}
-        <button onClick={handleSubmit} style={{background:C.twilight,color:"#fff",border:`1px solid ${C.twilight}`,padding:"13px 28px",cursor:"pointer",fontSize:14,fontFamily:"inherit",fontWeight:600,letterSpacing:"0.06em",marginTop:4,transition:"background 0.15s"}}>
+        <button onClick={handleSubmit} style={{background:C.main,color:"#fff",border:`1px solid ${C.main}`,padding:"13px 28px",cursor:"pointer",fontSize:14,fontFamily:"inherit",fontWeight:600,letterSpacing:"0.06em",marginTop:4,transition:"background 0.15s"}}>
           Request Booking →
         </button>
       </div>
@@ -440,7 +445,7 @@ function GalleryPage({active,setActive}){
         </div>
       </div>
       {lightbox!==null&&(
-        <div onClick={()=>setLightbox(null)} style={{position:"fixed",inset:0,background:"rgba(20,13,79,0.95)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}>
+        <div onClick={()=>setLightbox(null)} style={{position:"fixed",inset:0,background:"rgba(28,46,61,0.96)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}>
           <button onClick={()=>setLightbox(null)} style={{position:"absolute",top:20,right:24,background:"transparent",border:"1px solid rgba(255,255,255,0.2)",width:40,height:40,cursor:"pointer",color:"#fff",fontSize:20,display:"flex",alignItems:"center",justifyContent:"center"}}>×</button>
           <div style={{position:"absolute",top:26,left:"50%",transform:"translateX(-50%)",color:"rgba(255,255,255,0.4)",fontSize:12,fontFamily:FB,letterSpacing:"0.14em"}}>{lightbox+1} / {COUNT}</div>
           <button className="lb-prev" onClick={e=>{e.stopPropagation();setLightbox(i=>(i-1+COUNT)%COUNT);}} style={{position:"absolute",left:20,background:"transparent",border:"1px solid rgba(255,255,255,0.2)",width:48,height:48,cursor:"pointer",color:"#fff",fontSize:24,display:"flex",alignItems:"center",justifyContent:"center"}}>‹</button>
@@ -476,7 +481,7 @@ export default function App(){
   return(
     <div style={{fontFamily:FB,background:C.parchment,minHeight:"100vh",display:"flex",flexDirection:"column",color:C.twilight}}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&family=Raleway:wght@300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&family=Raleway:wght@300;400;500;600&display=swap');
         *{box-sizing:border-box;margin:0;padding:0;}
         body{-webkit-font-smoothing:antialiased;}
         button{transition:opacity 0.12s;cursor:pointer;}
@@ -522,7 +527,7 @@ export default function App(){
       <header style={{background:C.parchment,borderBottom:`1px solid ${C.stone}`,position:"sticky",top:0,zIndex:100}}>
         <div style={{maxWidth:1100,margin:"0 auto",padding:"0 24px",display:"flex",alignItems:"center",justifyContent:"space-between",height:56}}>
           <div onClick={()=>setPage("home")} style={{cursor:"pointer",display:"flex",alignItems:"center",gap:10}}>
-            <div style={{width:30,height:30,background:C.twilight,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontFamily:FF,fontSize:17,fontWeight:500,letterSpacing:"0.02em"}}>T</div>
+            <div style={{width:30,height:30,background:C.main,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontFamily:FF,fontSize:17,fontWeight:500,letterSpacing:"0.02em"}}>T</div>
             <span style={{fontSize:20,fontWeight:500,color:C.twilight,fontFamily:FF,letterSpacing:"0.02em"}}>Thrang</span>
           </div>
           <nav style={{display:"flex",alignItems:"center",gap:2}}>
@@ -542,7 +547,7 @@ export default function App(){
                 })}
               </>
             ):(
-              <button onClick={()=>setPage("login")} style={{background:C.crimson,color:"#fff",border:`1px solid ${C.crimson}`,padding:"7px 20px",fontSize:13,fontFamily:FB,fontWeight:500,letterSpacing:"0.04em",marginLeft:8}}>
+              <button onClick={()=>setPage("login")} style={{background:C.main,color:"#fff",border:`1px solid ${C.main}`,padding:"7px 20px",fontSize:13,fontFamily:FB,fontWeight:500,letterSpacing:"0.04em",marginLeft:8}}>
                 Book Now
               </button>
             )}
@@ -559,10 +564,10 @@ export default function App(){
             {/* Hero */}
             <section className="hero-section" style={{position:"relative",minHeight:560,display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
               <img src={imgFrontBoth} alt="Thrang" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}/>
-              <div style={{position:"absolute",inset:0,background:"linear-gradient(160deg,rgba(20,13,79,0.80) 0%,rgba(8,45,15,0.55) 100%)"}}/>
+              <div style={{position:"absolute",inset:0,background:"linear-gradient(160deg,rgba(42,74,94,0.82) 0%,rgba(8,45,15,0.52) 100%)"}}/>
               <div style={{position:"relative",textAlign:"center",color:"#fff",padding:"60px 24px",maxWidth:620}}>
                 <p style={{fontSize:10,letterSpacing:"0.3em",textTransform:"uppercase",color:C.frost,opacity:0.85,marginBottom:22,fontFamily:FB}}>Great Langdale Valley · Lake District</p>
-                <h1 className="hero-title" style={{fontSize:78,fontWeight:400,margin:"0 0 18px",letterSpacing:"-1px",lineHeight:0.95,fontFamily:FF,fontStyle:"italic"}}>Thrang</h1>
+                <h1 className="hero-title" style={{fontSize:62,fontWeight:400,margin:"0 0 18px",letterSpacing:"0.12em",lineHeight:1.05,fontFamily:FH}}>Thrang Properties</h1>
                 <p className="hero-sub" style={{fontSize:17,opacity:0.78,marginBottom:48,lineHeight:1.7,fontFamily:FB,fontWeight:300}}>Two exceptional properties in the heart of the Lakeland fells</p>
                 <button onClick={()=>setPage("login")} style={{background:"transparent",color:"#fff",border:"1px solid rgba(255,255,255,0.5)",padding:"13px 40px",fontSize:13,fontFamily:FB,fontWeight:500,letterSpacing:"0.1em",textTransform:"uppercase",transition:"background 0.2s"}}>
                   Request a Stay
@@ -585,7 +590,7 @@ export default function App(){
                 </div>
                 <div className="showcase-img" style={{position:"relative",overflow:"hidden",height:480,border:`1px solid ${C.stone}`}}>
                   <img key={homeActive} src={PROPERTY_IMAGES[homeActive]} alt={PROPERTIES[homeActive].name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
-                  <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,transparent 28%,rgba(20,13,79,0.88))"}}/>
+                  <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,transparent 28%,rgba(42,74,94,0.90))"}}/>
                   <div className="showcase-text" style={{position:"absolute",bottom:36,left:40,right:40,color:"#fff"}}>
                     <p style={{fontSize:10,letterSpacing:"0.26em",textTransform:"uppercase",color:C.frost,opacity:0.8,marginBottom:10,fontFamily:FB}}>Great Langdale Valley · Lake District</p>
                     <h2 style={{fontSize:32,fontWeight:400,margin:"0 0 12px",fontFamily:FF,fontStyle:"italic",letterSpacing:"0.01em"}}>{PROPERTIES[homeActive].name}</h2>
@@ -613,7 +618,7 @@ export default function App(){
             </section>
 
             {/* CTA */}
-            <section style={{background:C.twilight,padding:"84px 24px",textAlign:"center",color:"#fff"}}>
+            <section style={{background:C.mainD,padding:"84px 24px",textAlign:"center",color:"#fff"}}>
               <p style={{fontSize:10,letterSpacing:"0.3em",textTransform:"uppercase",color:C.frost,marginBottom:20,fontFamily:FB,opacity:0.8}}>Exclusive access</p>
               <h2 style={{fontSize:36,fontWeight:400,marginBottom:16,fontFamily:FF,fontStyle:"italic",letterSpacing:"-0.5px"}}>Ready to escape to Langdale?</h2>
               <p style={{fontSize:15,opacity:0.55,marginBottom:44,fontFamily:FB,fontWeight:300,maxWidth:400,margin:"0 auto 44px",lineHeight:1.8}}>Use your exclusive access code to check availability and make a request.</p>
@@ -635,7 +640,7 @@ export default function App(){
                 onChange={e=>setPassword(e.target.value)} onKeyDown={e=>e.key==="Enter"&&login()}
                 style={{width:"100%",padding:"12px 14px",fontSize:14,border:`1px solid ${C.stone}`,marginBottom:12,fontFamily:FB,color:C.twilight,background:C.parchment,outline:"none"}}/>
               {pwError&&<p style={{color:C.err,fontSize:13,marginBottom:12,fontFamily:FB}}>{pwError}</p>}
-              <button onClick={login} style={{width:"100%",background:C.crimson,color:"#fff",border:`1px solid ${C.crimson}`,padding:"13px",fontSize:14,fontFamily:FB,fontWeight:500,marginBottom:14,letterSpacing:"0.06em"}}>
+              <button onClick={login} style={{width:"100%",background:C.main,color:"#fff",border:`1px solid ${C.main}`,padding:"13px",fontSize:14,fontFamily:FB,fontWeight:500,marginBottom:14,letterSpacing:"0.06em"}}>
                 Enter
               </button>
               <button onClick={()=>setPage("home")} style={{background:"none",border:"none",color:C.warm,fontSize:12,fontFamily:FB,letterSpacing:"0.04em"}}>← Back to home</button>
@@ -649,7 +654,7 @@ export default function App(){
         {page==="gallery"&&<GalleryPage active={portalActive} setActive={setPortalActive}/>}
       </main>
 
-      <footer style={{background:C.twilight,borderTop:`1px solid rgba(255,255,255,0.08)`,padding:"28px 24px",textAlign:"center"}}>
+      <footer style={{background:C.mainD,borderTop:`1px solid rgba(255,255,255,0.08)`,padding:"28px 24px",textAlign:"center"}}>
         <p style={{fontSize:10,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(255,255,255,0.35)",fontFamily:FB}}>Thrang · Old Thrang &amp; Thrang Garth · Great Langdale Valley, Lake District</p>
       </footer>
     </div>
