@@ -120,7 +120,7 @@ function PricingCard({ pricing }){
     <div style={{border:`1px solid ${C.stone}`,background:C.white,padding:"22px 28px",marginBottom:20}}>
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",flexWrap:"wrap",gap:6,marginBottom:18}}>
         <PortalLabel>Rates</PortalLabel>
-        <p style={{fontSize:13,color:C.warm,fontFamily:FB,fontStyle:"italic",marginBottom:18}}>Weekly stays: Saturday to Saturday</p>
+        <p style={{fontSize:13,color:C.warm,fontFamily:FB,marginBottom:18}}>Weekly stays: Saturday to Saturday</p>
       </div>
       <div className="pricing-grid">
         {tiers.map(({label,sub,price,note,accent},i)=>(
@@ -180,7 +180,7 @@ function PortalHeader({ active, setActive, prop }){
         <div>
           <p style={{fontSize:10,letterSpacing:"0.22em",textTransform:"uppercase",color:C.crimson,margin:"0 0 6px",fontFamily:FB}}>Great Langdale Valley · Lake District</p>
           <h1 style={{fontSize:26,fontWeight:500,color:C.twilight,margin:"0 0 4px",fontFamily:FF,letterSpacing:"0.01em"}}>{prop.name}</h1>
-          <p style={{fontSize:14,color:C.warm,fontStyle:"italic",margin:0,fontFamily:FB}}>{prop.tagline}</p>
+          <p style={{fontSize:14,color:C.warm,margin:0,fontFamily:FB}}>{prop.tagline}</p>
         </div>
         <PropertyTabs active={active} setActive={setActive}/>
       </div>
@@ -302,7 +302,7 @@ function BookingPanel({property,onBooked,onReset}){
           <DateChip label="Check-out" value={checkOut}/>
           {nights>0&&<div style={{background:C.frostBg,color:C.twilight,border:`1px solid ${C.frost}`,padding:"5px 12px",fontSize:12,fontFamily:"inherit",letterSpacing:"0.04em"}}>{nights} night{nights!==1?"s":""}</div>}
         </div>
-        <p style={{fontSize:12,color:C.warm,marginBottom:12,fontFamily:"inherit",fontStyle:"italic"}}>Select a check-in date, then a check-out date.</p>
+        <p style={{fontSize:12,color:C.warm,marginBottom:12,fontFamily:"inherit"}}>Select a check-in date, then a check-out date.</p>
         <div style={{background:C.white,border:`1px solid ${C.stone}`,padding:16}}>
           <Calendar checkIn={checkIn} checkOut={checkOut} onSelectDate={handleSelect} hoverDate={hover} onHoverDate={setHover} bookedRanges={property.bookedRanges} pendingRanges={property.pendingRanges}/>
         </div>
@@ -481,7 +481,7 @@ export default function App(){
   return(
     <div style={{fontFamily:FB,background:C.parchment,minHeight:"100vh",display:"flex",flexDirection:"column",color:C.twilight}}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&family=Raleway:wght@300;400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:wght@400;500;600&family=Crimson+Pro:wght@300;400;600&family=Raleway:wght@300;400;500;600&display=swap');
         *{box-sizing:border-box;margin:0;padding:0;}
         body{-webkit-font-smoothing:antialiased;}
         button{transition:opacity 0.12s;cursor:pointer;}
@@ -527,8 +527,19 @@ export default function App(){
       <header style={{background:C.parchment,borderBottom:`1px solid ${C.stone}`,position:"sticky",top:0,zIndex:100}}>
         <div style={{maxWidth:1100,margin:"0 auto",padding:"0 24px",display:"flex",alignItems:"center",justifyContent:"space-between",height:56}}>
           <div onClick={()=>setPage("home")} style={{cursor:"pointer",display:"flex",alignItems:"center",gap:10}}>
-            <div style={{width:30,height:30,background:C.main,display:"flex",alignItems:"center",justifyContent:"center",color:"#fff",fontFamily:FF,fontSize:17,fontWeight:500,letterSpacing:"0.02em"}}>T</div>
-            <span style={{fontSize:20,fontWeight:500,color:C.twilight,fontFamily:FF,letterSpacing:"0.02em"}}>Thrang</span>
+            {/* Langdale Pikes — two-peak minimalist outline */}
+            <svg viewBox="0 0 52 34" width="44" height="28" style={{display:"block",flexShrink:0}}>
+              <polyline
+                points="1,33 11,22 19,9 26,16 36,2 46,20 51,33"
+                fill="none"
+                stroke={C.main}
+                strokeWidth="2.2"
+                strokeLinejoin="round"
+                strokeLinecap="round"
+              />
+              <line x1="1" y1="33" x2="51" y2="33" stroke={C.stone} strokeWidth="1"/>
+            </svg>
+            <span style={{fontSize:19,fontWeight:500,color:C.twilight,fontFamily:FF,letterSpacing:"0.02em"}}>Thrang Properties</span>
           </div>
           <nav style={{display:"flex",alignItems:"center",gap:2}}>
             <button onClick={()=>setPage("home")} style={{background:"none",border:"none",padding:"6px 12px",fontSize:13,color:page==="home"?C.twilight:C.indigo,fontFamily:FB,fontWeight:page==="home"?600:400,borderBottom:`1.5px solid ${page==="home"?C.crimson:"transparent"}`,paddingBottom:4}}>
@@ -593,7 +604,7 @@ export default function App(){
                   <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,transparent 28%,rgba(42,74,94,0.90))"}}/>
                   <div className="showcase-text" style={{position:"absolute",bottom:36,left:40,right:40,color:"#fff"}}>
                     <p style={{fontSize:10,letterSpacing:"0.26em",textTransform:"uppercase",color:C.frost,opacity:0.8,marginBottom:10,fontFamily:FB}}>Great Langdale Valley · Lake District</p>
-                    <h2 style={{fontSize:32,fontWeight:400,margin:"0 0 12px",fontFamily:FF,fontStyle:"italic",letterSpacing:"0.01em"}}>{PROPERTIES[homeActive].name}</h2>
+                    <h2 style={{fontSize:32,fontWeight:400,margin:"0 0 12px",fontFamily:FF,letterSpacing:"0.01em"}}>{PROPERTIES[homeActive].name}</h2>
                     <p style={{fontSize:14,opacity:0.8,margin:"0 0 22px",fontFamily:FB,fontWeight:300,maxWidth:520,lineHeight:1.8}}>{PROPERTIES[homeActive].description}</p>
                     <div style={{display:"flex",alignItems:"center",gap:14,flexWrap:"wrap"}}>
                       <span style={{border:"1px solid rgba(160,210,219,0.45)",padding:"5px 16px",fontSize:12,fontFamily:FB,letterSpacing:"0.06em",color:C.frost}}>Sleeps {PROPERTIES[homeActive].sleeps}</span>
@@ -620,7 +631,7 @@ export default function App(){
             {/* CTA */}
             <section style={{background:C.mainD,padding:"84px 24px",textAlign:"center",color:"#fff"}}>
               <p style={{fontSize:10,letterSpacing:"0.3em",textTransform:"uppercase",color:C.frost,marginBottom:20,fontFamily:FB,opacity:0.8}}>Exclusive access</p>
-              <h2 style={{fontSize:36,fontWeight:400,marginBottom:16,fontFamily:FF,fontStyle:"italic",letterSpacing:"-0.5px"}}>Ready to escape to Langdale?</h2>
+              <h2 style={{fontSize:36,fontWeight:400,marginBottom:16,fontFamily:FF,letterSpacing:"-0.5px"}}>Ready to escape to Langdale?</h2>
               <p style={{fontSize:15,opacity:0.55,marginBottom:44,fontFamily:FB,fontWeight:300,maxWidth:400,margin:"0 auto 44px",lineHeight:1.8}}>Use your exclusive access code to check availability and make a request.</p>
               <button onClick={()=>setPage("login")} style={{background:"transparent",color:"#fff",border:"1px solid rgba(160,210,219,0.45)",padding:"13px 40px",fontSize:13,fontFamily:FB,fontWeight:500,letterSpacing:"0.1em",textTransform:"uppercase"}}>
                 Access Booking Portal
@@ -634,7 +645,7 @@ export default function App(){
           <div style={{display:"flex",alignItems:"center",justifyContent:"center",minHeight:"calc(100vh - 120px)",padding:"40px 16px",background:C.parchment}}>
             <div className="login-card" style={{background:C.white,padding:"48px 44px",maxWidth:400,width:"100%",border:`1px solid ${C.stone}`,textAlign:"center"}}>
               <div style={{width:24,height:1,background:C.crimson,margin:"0 auto 28px"}}/>
-              <h2 style={{fontSize:26,fontWeight:400,marginBottom:8,color:C.twilight,fontFamily:FF,fontStyle:"italic"}}>Private Access</h2>
+              <h2 style={{fontSize:26,fontWeight:400,marginBottom:8,color:C.twilight,fontFamily:FF}}>Private Access</h2>
               <p style={{fontSize:14,color:C.warm,marginBottom:28,lineHeight:1.75,fontFamily:FB,fontWeight:300}}>Enter the password shared with you to access the booking portal.</p>
               <input type="password" placeholder="Enter access password" value={password}
                 onChange={e=>setPassword(e.target.value)} onKeyDown={e=>e.key==="Enter"&&login()}
