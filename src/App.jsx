@@ -237,8 +237,7 @@ function BookingPanel({property,onBooked,onReset}){
 }
 
 /* ─── Booking page ──────────────────────────────────────────────────────── */
-function BookingPage(){
-  const [active,setActive]=useState("oldThrang");
+function BookingPage({active,setActive}){
   const [confirmedRanges,setConfirmedRanges]=useState({oldThrang:[],thrangGarth:[]});
   const [pendingRanges,setPendingRanges]=useState({oldThrang:[],thrangGarth:[]});
 
@@ -293,8 +292,7 @@ function BookingPage(){
 }
 
 /* ─── Info page ─────────────────────────────────────────────────────────── */
-function InfoPage(){
-  const [active,setActive]=useState("oldThrang");
+function InfoPage({active,setActive}){
   const p=PROPERTIES[active];
   const card={background:C.white,borderRadius:14,padding:"22px 24px",border:`1px solid ${C.slate200}`,boxShadow:`0 2px 14px rgba(30,42,53,0.06)`};
   const sectionTitle={fontSize:11,fontWeight:700,color:C.slate400,letterSpacing:"0.18em",textTransform:"uppercase",fontFamily:FB,marginBottom:16,paddingBottom:10,borderBottom:`1px solid ${C.slate100}`,display:"block"};
@@ -364,8 +362,7 @@ function CameraIcon({size=28,color="currentColor"}){
 }
 
 /* ─── Gallery page ──────────────────────────────────────────────────────── */
-function GalleryPage(){
-  const [active,setActive]=useState("oldThrang");
+function GalleryPage({active,setActive}){
   const [lightbox,setLightbox]=useState(null); // null = closed, number = open index
   const p=PROPERTIES[active];
   const PLACEHOLDER_COUNT=12;
@@ -456,6 +453,7 @@ const PORTAL_PAGES = ["booking","info","gallery"];
 export default function App(){
   const [page,setPage]=useState("home");
   const [homeActive,setHomeActive]=useState("oldThrang");
+  const [portalActive,setPortalActive]=useState("oldThrang");
   const [password,setPassword]=useState("");
   const [pwError,setPwError]=useState("");
   const [mounted,setMounted]=useState(false);
@@ -597,9 +595,9 @@ export default function App(){
           </div>
         )}
 
-        {page==="booking"&&<BookingPage/>}
-        {page==="info"&&<InfoPage/>}
-        {page==="gallery"&&<GalleryPage/>}
+        {page==="booking"&&<BookingPage active={portalActive} setActive={setPortalActive}/>}
+        {page==="info"&&<InfoPage active={portalActive} setActive={setPortalActive}/>}
+        {page==="gallery"&&<GalleryPage active={portalActive} setActive={setPortalActive}/>}
       </main>
 
       <footer style={{background:C.slate900,padding:"22px 28px",textAlign:"center"}}>
