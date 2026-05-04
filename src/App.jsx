@@ -190,20 +190,32 @@ function BookingPage(){
   const [confirmedRanges,setConfirmedRanges]=useState({oldThrang:[],thrangGarth:[]});
   const [pendingRanges,setPendingRanges]=useState({oldThrang:[],thrangGarth:[]});
 
-  const fetchCalendar=()=>{
+  const CACHE_KEY="thrang_cal_cache";
+  const CACHE_TTL=2*60*1000;
+  const applyEvents=(events)=>{
+    const confirmed={oldThrang:[],thrangGarth:[]};
+    const pending={oldThrang:[],thrangGarth:[]};
+    events.forEach(ev=>{
+      const range={start:new Date(ev.start),end:new Date(ev.end)};
+      const key=ev.title.indexOf("Old Thrang")!==-1?"oldThrang":ev.title.indexOf("Thrang Garth")!==-1?"thrangGarth":null;
+      if(!key)return;
+      if(ev.status==="confirmed") confirmed[key].push(range);
+      else pending[key].push(range);
+    });
+    setConfirmedRanges(confirmed);
+    setPendingRanges(pending);
+  };
+  const fetchCalendar=(bust=false)=>{
+    try{
+      if(!bust){
+        const cached=JSON.parse(localStorage.getItem(CACHE_KEY)||"null");
+        if(cached&&Date.now()-cached.ts<CACHE_TTL){applyEvents(cached.events);return()=>{};}
+      }
+    }catch(_){}
     const cbName="__gcal_"+Date.now();
     window[cbName]=(events)=>{
-      const confirmed={oldThrang:[],thrangGarth:[]};
-      const pending={oldThrang:[],thrangGarth:[]};
-      events.forEach(ev=>{
-        const range={start:new Date(ev.start),end:new Date(ev.end)};
-        const key=ev.title.indexOf("Old Thrang")!==-1?"oldThrang":ev.title.indexOf("Thrang Garth")!==-1?"thrangGarth":null;
-        if(!key)return;
-        if(ev.status==="confirmed") confirmed[key].push(range);
-        else pending[key].push(range);
-      });
-      setConfirmedRanges(confirmed);
-      setPendingRanges(pending);
+      applyEvents(events);
+      try{localStorage.setItem(CACHE_KEY,JSON.stringify({ts:Date.now(),events}));}catch(_){}
       delete window[cbName];
     };
     const s=document.createElement("script");
@@ -237,7 +249,7 @@ function BookingPage(){
       <div style={{background:C.white,borderRadius:16,padding:"24px 28px",border:`1px solid ${C.slate200}`,boxShadow:`0 4px 32px rgba(30,42,53,0.07)`}}>
         <BookingPanel key={active} property={p}
           onBooked={(id,start,end)=>setPendingRanges(r=>({...r,[id]:[...r[id],{start,end}]}))}
-          onReset={fetchCalendar}/>
+          onReset={()=>fetchCalendar(true)}/>
       </div>
     </div>
   );
