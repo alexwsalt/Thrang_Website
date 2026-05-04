@@ -27,9 +27,9 @@ const PROPERTIES = {
     description: "Old Thrang is a beautifully restored Lakeland farmhouse nestled in the Great Langdale Valley. With original stone walls, oak beams, and a wood-burning stove, it blends rustic charm with modern comfort — the perfect retreat for a group looking to escape to the fells.",
     parking: 2,
     bedrooms: [
-      { name: "Bedroom 1", beds: "Double bed + single bed" },
+      { name: "Bedroom 1", beds: "Double bed + 2 single beds" },
       { name: "Bedroom 2", beds: "2 single beds" },
-      { name: "Bedroom 3", beds: "Double bed" },
+      { name: "Bedroom 3", beds: "1 single bed" },
     ],
   },
   thrangGarth: {
@@ -38,10 +38,10 @@ const PROPERTIES = {
     description: "Thrang Garth is a generous, characterful property perfect for larger groups seeking the very best of the Lake District. Set within the stunning Great Langdale Valley, it offers ample space, beautiful interiors, and direct access to some of the finest walking in England.",
     parking: 3,
     bedrooms: [
-      { name: "Bedroom 1", beds: "2 double beds" },
-      { name: "Bedroom 2", beds: "¾ double bed" },
-      { name: "Bedroom 3", beds: "2 single beds" },
-      { name: "Bedroom 4", beds: "3 single beds" },
+      { name: "Bedroom 1", beds: "Double bed + cot" },
+      { name: "Bedroom 2", beds: "Double bed" },
+      { name: "Bedroom 3", beds: "¾ double bed" },
+      { name: "Bedroom 4", beds: "5 single beds" },
     ],
   },
 };
@@ -352,11 +352,40 @@ function InfoPage(){
   );
 }
 
+/* ─── Camera icon SVG ───────────────────────────────────────────────────── */
+function CameraIcon({size=28,color="currentColor"}){
+  return(
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="6" width="18" height="14" rx="2"/>
+      <circle cx="12" cy="13" r="3"/>
+      <path d="M8 6l1.5-2h5L16 6"/>
+    </svg>
+  );
+}
+
 /* ─── Gallery page ──────────────────────────────────────────────────────── */
 function GalleryPage(){
   const [active,setActive]=useState("oldThrang");
+  const [lightbox,setLightbox]=useState(null); // null = closed, number = open index
   const p=PROPERTIES[active];
   const PLACEHOLDER_COUNT=12;
+  const total=PLACEHOLDER_COUNT;
+
+  // Close lightbox when property changes
+  useEffect(()=>{ setLightbox(null); },[active]);
+
+  // Keyboard navigation
+  useEffect(()=>{
+    if(lightbox===null)return;
+    const handler=(e)=>{
+      if(e.key==="ArrowRight") setLightbox(i=>(i+1)%total);
+      else if(e.key==="ArrowLeft") setLightbox(i=>(i-1+total)%total);
+      else if(e.key==="Escape") setLightbox(null);
+    };
+    window.addEventListener("keydown",handler);
+    return()=>window.removeEventListener("keydown",handler);
+  },[lightbox,total]);
+
   return(
     <div className="booking-portal" style={{maxWidth:960,margin:"0 auto",padding:"28px 28px"}}>
       <PortalHeader active={active} setActive={setActive} prop={p}/>
@@ -368,18 +397,55 @@ function GalleryPage(){
         <div style={{overflowY:"auto",maxHeight:560,paddingRight:4}}>
           <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14}}>
             {Array.from({length:PLACEHOLDER_COUNT},(_,i)=>(
-              <div key={i} style={{aspectRatio:"4/3",background:C.slate100,borderRadius:10,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8,border:`1px solid ${C.slate200}`,color:C.slate300}}>
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                  <rect x="3" y="6" width="18" height="14" rx="2"/>
-                  <circle cx="12" cy="13" r="3"/>
-                  <path d="M8 6l1.5-2h5L16 6"/>
-                </svg>
+              <div key={i} onClick={()=>setLightbox(i)}
+                style={{aspectRatio:"4/3",background:C.slate100,borderRadius:10,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8,border:`1px solid ${C.slate200}`,color:C.slate300,cursor:"pointer",transition:"all 0.15s"}}
+                onMouseEnter={e=>{e.currentTarget.style.border=`1px solid ${C.lake300}`;e.currentTarget.style.background=C.slate200;}}
+                onMouseLeave={e=>{e.currentTarget.style.border=`1px solid ${C.slate200}`;e.currentTarget.style.background=C.slate100;}}>
+                <CameraIcon/>
                 <span style={{fontSize:11,fontFamily:FB,letterSpacing:"0.06em"}}>Photo {i+1}</span>
               </div>
             ))}
           </div>
         </div>
       </div>
+
+      {/* Lightbox overlay */}
+      {lightbox!==null&&(
+        <div onClick={()=>setLightbox(null)}
+          style={{position:"fixed",inset:0,background:"rgba(15,22,30,0.93)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}>
+
+          {/* Close button */}
+          <button onClick={()=>setLightbox(null)}
+            style={{position:"absolute",top:20,right:24,background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:"50%",width:44,height:44,cursor:"pointer",color:"#fff",fontSize:22,display:"flex",alignItems:"center",justifyContent:"center",lineHeight:1}}>
+            ×
+          </button>
+
+          {/* Counter */}
+          <div style={{position:"absolute",top:24,left:"50%",transform:"translateX(-50%)",color:"rgba(255,255,255,0.55)",fontSize:13,fontFamily:FB,letterSpacing:"0.1em"}}>
+            {lightbox+1} / {total}
+          </div>
+
+          {/* Prev arrow */}
+          <button onClick={e=>{e.stopPropagation();setLightbox(i=>(i-1+total)%total);}}
+            style={{position:"absolute",left:20,background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:"50%",width:52,height:52,cursor:"pointer",color:"#fff",fontSize:26,display:"flex",alignItems:"center",justifyContent:"center"}}>
+            ‹
+          </button>
+
+          {/* Image area — stop clicks propagating to backdrop */}
+          <div onClick={e=>e.stopPropagation()}
+            style={{width:"min(80vw,860px)",aspectRatio:"4/3",background:"rgba(255,255,255,0.04)",borderRadius:12,border:"1px solid rgba(255,255,255,0.1)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:14,color:"rgba(255,255,255,0.3)"}}>
+            <CameraIcon size={52} color="rgba(255,255,255,0.2)"/>
+            <span style={{fontSize:15,fontFamily:FB,letterSpacing:"0.08em",color:"rgba(255,255,255,0.35)"}}>Photo {lightbox+1} — {p.name}</span>
+            <span style={{fontSize:11,fontFamily:FB,color:"rgba(255,255,255,0.2)"}}>Image coming soon</span>
+          </div>
+
+          {/* Next arrow */}
+          <button onClick={e=>{e.stopPropagation();setLightbox(i=>(i+1)%total);}}
+            style={{position:"absolute",right:20,background:"rgba(255,255,255,0.08)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:"50%",width:52,height:52,cursor:"pointer",color:"#fff",fontSize:26,display:"flex",alignItems:"center",justifyContent:"center"}}>
+            ›
+          </button>
+        </div>
+      )}
     </div>
   );
 }
