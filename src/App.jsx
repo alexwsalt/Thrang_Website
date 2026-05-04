@@ -25,13 +25,39 @@ const PROPERTIES = {
     id: "oldThrang", name: "Old Thrang", sleeps: 7,
     tagline: "A traditional Lakeland farmhouse for up to 7 guests",
     description: "Old Thrang is a beautifully restored Lakeland farmhouse nestled in the Great Langdale Valley. With original stone walls, oak beams, and a wood-burning stove, it blends rustic charm with modern comfort — the perfect retreat for a group looking to escape to the fells.",
+    parking: 2,
+    bedrooms: [
+      { name: "Bedroom 1", beds: "Double bed + single bed" },
+      { name: "Bedroom 2", beds: "2 single beds" },
+      { name: "Bedroom 3", beds: "Double bed" },
+    ],
   },
   thrangGarth: {
     id: "thrangGarth", name: "Thrang Garth", sleeps: 11,
     tagline: "A spacious Lakeland retreat for up to 11 guests",
     description: "Thrang Garth is a generous, characterful property perfect for larger groups seeking the very best of the Lake District. Set within the stunning Great Langdale Valley, it offers ample space, beautiful interiors, and direct access to some of the finest walking in England.",
+    parking: 3,
+    bedrooms: [
+      { name: "Bedroom 1", beds: "2 double beds" },
+      { name: "Bedroom 2", beds: "¾ double bed" },
+      { name: "Bedroom 3", beds: "2 single beds" },
+      { name: "Bedroom 4", beds: "3 single beds" },
+    ],
   },
 };
+
+const SHARED_AMENITIES = [
+  { icon: "wifi",    label: "Free WiFi" },
+  { icon: "kitchen", label: "Self-catering kitchen" },
+  { icon: "dish",    label: "Dishwasher" },
+  { icon: "micro",   label: "Microwave" },
+  { icon: "fridge",  label: "Fridge / freezer" },
+  { icon: "tv",      label: "Television" },
+  { icon: "heat",    label: "Central heating" },
+  { icon: "garden",  label: "Large private garden" },
+  { icon: "pets",    label: "Pets welcome" },
+  { icon: "excl",    label: "Exclusive private use" },
+];
 
 function isSameDay(a,b){ return a.getFullYear()===b.getFullYear()&&a.getMonth()===b.getMonth()&&a.getDate()===b.getDate(); }
 function isInRange(date,start,end){
@@ -49,6 +75,30 @@ function getFirstDay(y,m){ return new Date(y,m,1).getDay(); }
 const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
 const DAYS=["Su","Mo","Tu","We","Th","Fr","Sa"];
 
+/* ─── Shared portal header row ─────────────────────────────────────────── */
+function PortalHeader({ active, setActive, prop }) {
+  return (
+    <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20,flexWrap:"wrap",gap:12}}>
+      <div>
+        <h1 style={{fontSize:24,fontWeight:700,color:C.slate800,margin:0,fontFamily:FF}}>{prop.name}</h1>
+        <p style={{fontSize:13,color:C.slate400,fontStyle:"italic",margin:"3px 0 0",fontFamily:FB}}>{prop.tagline}</p>
+      </div>
+      <div style={{display:"flex",gap:10}}>
+        {Object.values(PROPERTIES).map(p=>{
+          const sel=active===p.id;
+          return(
+            <button key={p.id} onClick={()=>setActive(p.id)}
+              style={{padding:"8px 20px",border:`2px solid ${sel?C.lake500:C.slate200}`,borderRadius:20,background:sel?C.lake600:C.white,color:sel?C.white:C.slate700,cursor:"pointer",fontFamily:FB,fontSize:13,fontWeight:600,transition:"all 0.2s",boxShadow:sel?`0 2px 12px ${C.lake300}`:"none"}}>
+              {p.name} · Sleeps {p.sleeps}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* ─── Calendar ──────────────────────────────────────────────────────────── */
 function Calendar({checkIn,checkOut,onSelectDate,hoverDate,onHoverDate,bookedRanges,pendingRanges}){
   const today=new Date();
   const [vy,setVy]=useState(today.getFullYear());
@@ -114,6 +164,7 @@ function DateChip({label,value}){
   );
 }
 
+/* ─── Booking panel ─────────────────────────────────────────────────────── */
 function BookingPanel({property,onBooked,onReset}){
   const [checkIn,setCheckIn]=useState(null);
   const [checkOut,setCheckOut]=useState(null);
@@ -185,6 +236,7 @@ function BookingPanel({property,onBooked,onReset}){
   );
 }
 
+/* ─── Booking page ──────────────────────────────────────────────────────── */
 function BookingPage(){
   const [active,setActive]=useState("oldThrang");
   const [confirmedRanges,setConfirmedRanges]=useState({oldThrang:[],thrangGarth:[]});
@@ -230,22 +282,7 @@ function BookingPage(){
   const p={...PROPERTIES[active],bookedRanges:confirmedRanges[active]||[],pendingRanges:pendingRanges[active]||[]};
   return(
     <div className="booking-portal" style={{maxWidth:960,margin:"0 auto",padding:"28px 28px",fontFamily:FB}}>
-      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:20}}>
-        <div>
-          <h1 style={{fontSize:24,fontWeight:700,color:C.slate800,margin:0,fontFamily:FF}}>{p.name}</h1>
-          <p style={{fontSize:13,color:C.slate400,fontStyle:"italic",margin:"3px 0 0",fontFamily:FB}}>{p.tagline}</p>
-        </div>
-        <div style={{display:"flex",gap:10}}>
-          {Object.values(PROPERTIES).map(prop=>{
-            const sel=active===prop.id;
-            return(
-              <button key={prop.id} onClick={()=>setActive(prop.id)} style={{padding:"8px 20px",border:`2px solid ${sel?C.lake500:C.slate200}`,borderRadius:20,background:sel?C.lake600:C.white,color:sel?C.white:C.slate700,cursor:"pointer",fontFamily:FB,fontSize:13,fontWeight:600,transition:"all 0.2s",boxShadow:sel?`0 2px 12px ${C.lake300}`:"none"}}>
-                {prop.name} · Sleeps {prop.sleeps}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      <PortalHeader active={active} setActive={setActive} prop={p}/>
       <div style={{background:C.white,borderRadius:16,padding:"24px 28px",border:`1px solid ${C.slate200}`,boxShadow:`0 4px 32px rgba(30,42,53,0.07)`}}>
         <BookingPanel key={active} property={p}
           onBooked={(id,start,end)=>setPendingRanges(r=>({...r,[id]:[...r[id],{start,end}]}))}
@@ -255,6 +292,101 @@ function BookingPage(){
   );
 }
 
+/* ─── Info page ─────────────────────────────────────────────────────────── */
+function InfoPage(){
+  const [active,setActive]=useState("oldThrang");
+  const p=PROPERTIES[active];
+  const card={background:C.white,borderRadius:14,padding:"22px 24px",border:`1px solid ${C.slate200}`,boxShadow:`0 2px 14px rgba(30,42,53,0.06)`};
+  const sectionTitle={fontSize:11,fontWeight:700,color:C.slate400,letterSpacing:"0.18em",textTransform:"uppercase",fontFamily:FB,marginBottom:16,paddingBottom:10,borderBottom:`1px solid ${C.slate100}`,display:"block"};
+  return(
+    <div className="booking-portal" style={{maxWidth:960,margin:"0 auto",padding:"28px 28px"}}>
+      <PortalHeader active={active} setActive={setActive} prop={p}/>
+
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:20,marginBottom:20}}>
+        {/* Overview card */}
+        <div style={card}>
+          <span style={sectionTitle}>Property Overview</span>
+          <div style={{display:"flex",flexDirection:"column",gap:12}}>
+            {[
+              ["Location","Great Langdale Valley, Lake District"],
+              ["Sleeps",String(p.sleeps)],
+              ["Bedrooms",String(p.bedrooms.length)],
+              ["Parking",`${p.parking} spaces`],
+              ["Type","Self-catering holiday let"],
+            ].map(([label,value])=>(
+              <div key={label} style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",borderBottom:`1px solid ${C.slate100}`,paddingBottom:10}}>
+                <span style={{fontSize:13,color:C.slate500,fontFamily:FB}}>{label}</span>
+                <span style={{fontSize:13,fontWeight:600,color:C.slate800,fontFamily:FB}}>{value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Bedrooms card */}
+        <div style={card}>
+          <span style={sectionTitle}>Bedrooms</span>
+          <div style={{display:"flex",flexDirection:"column",gap:10}}>
+            {p.bedrooms.map((bed,i)=>(
+              <div key={i} style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",borderBottom:`1px solid ${C.slate100}`,paddingBottom:10}}>
+                <span style={{fontSize:13,color:C.slate500,fontFamily:FB}}>{bed.name}</span>
+                <span style={{fontSize:13,fontWeight:600,color:C.slate800,fontFamily:FB,textAlign:"right",maxWidth:"55%"}}>{bed.beds}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Amenities card — full width */}
+      <div style={card}>
+        <span style={sectionTitle}>Amenities</span>
+        <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(180px,1fr))",gap:12}}>
+          {SHARED_AMENITIES.map(({label})=>(
+            <div key={label} style={{display:"flex",alignItems:"center",gap:10,background:C.fog,borderRadius:8,padding:"10px 14px"}}>
+              <div style={{width:7,height:7,borderRadius:"50%",background:C.lake500,flexShrink:0}}/>
+              <span style={{fontSize:13,color:C.slate700,fontFamily:FB}}>{label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Gallery page ──────────────────────────────────────────────────────── */
+function GalleryPage(){
+  const [active,setActive]=useState("oldThrang");
+  const p=PROPERTIES[active];
+  const PLACEHOLDER_COUNT=12;
+  return(
+    <div className="booking-portal" style={{maxWidth:960,margin:"0 auto",padding:"28px 28px"}}>
+      <PortalHeader active={active} setActive={setActive} prop={p}/>
+
+      <div style={{background:C.white,borderRadius:16,padding:"24px 28px",border:`1px solid ${C.slate200}`,boxShadow:`0 4px 32px rgba(30,42,53,0.07)`}}>
+        <p style={{fontSize:11,fontWeight:700,color:C.slate400,letterSpacing:"0.18em",textTransform:"uppercase",fontFamily:FB,margin:"0 0 20px"}}>Photo Gallery — {p.name}</p>
+
+        {/* Scroll container */}
+        <div style={{overflowY:"auto",maxHeight:560,paddingRight:4}}>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:14}}>
+            {Array.from({length:PLACEHOLDER_COUNT},(_,i)=>(
+              <div key={i} style={{aspectRatio:"4/3",background:C.slate100,borderRadius:10,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8,border:`1px solid ${C.slate200}`,color:C.slate300}}>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="6" width="18" height="14" rx="2"/>
+                  <circle cx="12" cy="13" r="3"/>
+                  <path d="M8 6l1.5-2h5L16 6"/>
+                </svg>
+                <span style={{fontSize:11,fontFamily:FB,letterSpacing:"0.06em"}}>Photo {i+1}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── App ───────────────────────────────────────────────────────────────── */
+const PORTAL_PAGES = ["booking","info","gallery"];
+
 export default function App(){
   const [page,setPage]=useState("home");
   const [homeActive,setHomeActive]=useState("oldThrang");
@@ -262,10 +394,12 @@ export default function App(){
   const [pwError,setPwError]=useState("");
   const [mounted,setMounted]=useState(false);
   useEffect(()=>{setTimeout(()=>setMounted(true),50);},[]);
+  const inPortal=PORTAL_PAGES.includes(page);
   const login=()=>{
     if(password===ACCESS_PASSWORD){setPwError("");setPage("booking");}
     else setPwError("Incorrect password — please try again.");
   };
+  const goPortal=(target)=>inPortal?setPage(target):setPage("login");
   return(
     <div style={{fontFamily:FB,background:C.slate50,minHeight:"100vh",display:"flex",flexDirection:"column"}}>
       <style>{`
@@ -286,9 +420,23 @@ export default function App(){
           </div>
           <nav style={{display:"flex",gap:6,alignItems:"center"}}>
             <button onClick={()=>setPage("home")} style={{background:"none",border:"none",cursor:"pointer",padding:"7px 14px",fontSize:14,color:C.slate600,fontFamily:FB}}>Home</button>
-            <button onClick={()=>setPage(page==="booking"?"booking":"login")} style={{background:C.lake600,color:"#fff",border:"none",padding:"8px 22px",borderRadius:20,cursor:"pointer",fontSize:14,fontFamily:FB,fontWeight:600,boxShadow:`0 2px 12px ${C.lake300}`}}>
-              {page==="booking"?"My Booking":"Book Now"}
-            </button>
+            {inPortal?(
+              <>
+                {[["booking","Book"],["info","Info"],["gallery","Gallery"]].map(([pg,label])=>{
+                  const active=page===pg;
+                  return(
+                    <button key={pg} onClick={()=>setPage(pg)}
+                      style={{padding:"7px 16px",border:`1.5px solid ${active?C.lake500:C.slate200}`,borderRadius:20,background:active?C.lake600:C.white,color:active?C.white:C.slate600,cursor:"pointer",fontSize:13,fontFamily:FB,fontWeight:600,transition:"all 0.2s",boxShadow:active?`0 2px 10px ${C.lake300}`:"none"}}>
+                      {label}
+                    </button>
+                  );
+                })}
+              </>
+            ):(
+              <button onClick={()=>setPage("login")} style={{background:C.lake600,color:"#fff",border:"none",padding:"8px 22px",borderRadius:20,cursor:"pointer",fontSize:14,fontFamily:FB,fontWeight:600,boxShadow:`0 2px 12px ${C.lake300}`}}>
+                Book Now
+              </button>
+            )}
           </nav>
         </div>
       </header>
@@ -384,6 +532,8 @@ export default function App(){
         )}
 
         {page==="booking"&&<BookingPage/>}
+        {page==="info"&&<InfoPage/>}
+        {page==="gallery"&&<GalleryPage/>}
       </main>
 
       <footer style={{background:C.slate900,padding:"22px 28px",textAlign:"center"}}>
