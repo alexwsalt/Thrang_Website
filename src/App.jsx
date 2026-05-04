@@ -114,7 +114,7 @@ function DateChip({label,value}){
   );
 }
 
-function BookingPanel({property,onBooked}){
+function BookingPanel({property,onBooked,onReset}){
   const [checkIn,setCheckIn]=useState(null);
   const [checkOut,setCheckOut]=useState(null);
   const [hover,setHover]=useState(null);
@@ -139,7 +139,7 @@ function BookingPanel({property,onBooked}){
     onBooked(property.id,checkIn,checkOut);
     setSubmitted(true);
   };
-  const reset=()=>{setSubmitted(false);setCheckIn(null);setCheckOut(null);setForm({name:"",email:"",phone:"",message:""});};
+  const reset=()=>{setSubmitted(false);setCheckIn(null);setCheckOut(null);setForm({name:"",email:"",phone:"",message:""});onReset&&onReset();};
   const inp={padding:"12px 14px",border:`1.5px solid ${C.slate200}`,borderRadius:8,fontSize:15,fontFamily:FB,color:C.slate800,background:C.fog,outline:"none",width:"100%",boxSizing:"border-box"};
   const lbl={fontSize:11,fontWeight:700,color:C.slate400,letterSpacing:"0.12em",textTransform:"uppercase",fontFamily:FB,marginBottom:5,display:"block"};
   if(submitted)return(
@@ -189,7 +189,8 @@ function BookingPage(){
   const [active,setActive]=useState("oldThrang");
   const [confirmedRanges,setConfirmedRanges]=useState({oldThrang:[],thrangGarth:[]});
   const [pendingRanges,setPendingRanges]=useState({oldThrang:[],thrangGarth:[]});
-  useEffect(()=>{
+
+  const fetchCalendar=()=>{
     const cbName="__gcal_"+Date.now();
     window[cbName]=(events)=>{
       const confirmed={oldThrang:[],thrangGarth:[]};
@@ -210,7 +211,10 @@ function BookingPage(){
     s.onerror=()=>delete window[cbName];
     document.head.appendChild(s);
     return()=>{try{document.head.removeChild(s);}catch(_){}};
-  },[]);
+  };
+
+  useEffect(()=>fetchCalendar(),[active]);
+
   const p={...PROPERTIES[active],bookedRanges:confirmedRanges[active]||[],pendingRanges:pendingRanges[active]||[]};
   return(
     <div className="booking-portal" style={{maxWidth:960,margin:"0 auto",padding:"28px 28px",fontFamily:FB}}>
@@ -231,7 +235,9 @@ function BookingPage(){
         </div>
       </div>
       <div style={{background:C.white,borderRadius:16,padding:"24px 28px",border:`1px solid ${C.slate200}`,boxShadow:`0 4px 32px rgba(30,42,53,0.07)`}}>
-        <BookingPanel key={active} property={p} onBooked={(id,start,end)=>setPendingRanges(r=>({...r,[id]:[...r[id],{start,end}]}))} />
+        <BookingPanel key={active} property={p}
+          onBooked={(id,start,end)=>setPendingRanges(r=>({...r,[id]:[...r[id],{start,end}]}))}
+          onReset={fetchCalendar}/>
       </div>
     </div>
   );
