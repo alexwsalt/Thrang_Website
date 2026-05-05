@@ -327,9 +327,13 @@ function BookingPage({active,setActive}){
     const confirmed={oldThrang:[],thrangGarth:[]},pending={oldThrang:[],thrangGarth:[]};
     events.forEach(ev=>{
       const range={start:new Date(ev.start),end:new Date(ev.end)};
-      const key=ev.title.indexOf("Old Thrang")!==-1?"oldThrang":ev.title.indexOf("Thrang Garth")!==-1?"thrangGarth":null;
-      if(!key)return;
-      if(ev.status==="confirmed") confirmed[key].push(range); else pending[key].push(range);
+      let key=ev.property;
+      if(!key){
+        const t=ev.title||"";
+        key=t.indexOf("Old Thrang")!==-1?"oldThrang":t.indexOf("Thrang Garth")!==-1?"thrangGarth":null;
+      }
+      if(!key||!confirmed[key])return;
+      (ev.status==="confirmed"?confirmed:pending)[key].push(range);
     });
     setConfirmedRanges(confirmed);setPendingRanges(pending);
   };
