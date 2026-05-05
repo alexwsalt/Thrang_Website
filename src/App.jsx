@@ -341,6 +341,18 @@ function BookingPage({active,setActive}){
     return()=>{try{document.head.removeChild(s);}catch(_){}};
   };
   useEffect(()=>fetchCalendar(),[active]);
+  // Live sync: refetch on tab focus, and every 60s while visible
+  useEffect(()=>{
+    const POLL_MS=60*1000;
+    let timer=null;
+    const start=()=>{stop();timer=setInterval(()=>{if(document.visibilityState==="visible")fetchCalendar(true);},POLL_MS);};
+    const stop=()=>{if(timer){clearInterval(timer);timer=null;}};
+    const onVis=()=>{if(document.visibilityState==="visible"){fetchCalendar(true);start();}else{stop();}};
+    if(document.visibilityState==="visible")start();
+    document.addEventListener("visibilitychange",onVis);
+    window.addEventListener("focus",onVis);
+    return()=>{stop();document.removeEventListener("visibilitychange",onVis);window.removeEventListener("focus",onVis);};
+  },[]);
   const p={...PROPERTIES[active],bookedRanges:confirmedRanges[active]||[],pendingRanges:pendingRanges[active]||[]};
   return(
     <div className="booking-portal portal-page" style={{maxWidth:960,margin:"0 auto",padding:"32px 24px"}}>
