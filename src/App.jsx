@@ -114,36 +114,25 @@ function PortalLabel({ children }){
   );
 }
 
-/* ─── Pricing card ──────────────────────────────────────────────────────── */
-function PricingCard({ pricing }){
-  const tiers=[
-    { label:"Winter",  sub:"November – March", price:pricing.winter,  note:"per week",  accent:C.indigo  },
-    { label:"Summer",  sub:"April – October",  price:pricing.summer,  note:"per week",  accent:C.crimson },
-    { label:"Weekend", sub:"Friday – Monday",  price:pricing.weekend, note:"per stay",  accent:C.indigo  },
+/* ─── Pricing note (compact) ────────────────────────────────────────────── */
+function PricingNote({ pricing }){
+  const items=[
+    { label:"Winter",  sub:"Nov – Mar",  price:pricing.winter,  note:"/ week" },
+    { label:"Summer",  sub:"Apr – Oct",  price:pricing.summer,  note:"/ week" },
+    { label:"Weekend", sub:"Fri – Mon",  price:pricing.weekend, note:"/ stay" },
   ];
   return(
-    <div style={{border:`1px solid ${C.stone}`,background:C.white,padding:"22px 28px",marginBottom:20}}>
-      <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",flexWrap:"wrap",gap:6,marginBottom:18}}>
-        <PortalLabel>Rates</PortalLabel>
-        <p style={{fontSize:13,color:C.warm,fontFamily:FB,marginBottom:18}}>Weekly stays: Saturday to Saturday</p>
-      </div>
-      <div className="pricing-grid">
-        {tiers.map(({label,sub,price,note,accent},i)=>(
-          <div key={label} style={{
-            padding:"18px 20px",
-            background: i===1 ? C.parchment : C.white,
-            borderTop:`2px solid ${accent}`,
-            border:`1px solid ${C.stone}`,
-            borderTopWidth:2,
-            borderTopColor:accent,
-          }}>
-            <p style={{fontSize:10,fontWeight:600,letterSpacing:"0.16em",textTransform:"uppercase",color:accent,margin:"0 0 3px",fontFamily:FB}}>{label}</p>
-            <p style={{fontSize:12,color:C.warm,margin:"0 0 14px",fontFamily:FB}}>{sub}</p>
-            <p style={{fontSize:28,fontWeight:500,color:C.twilight,fontFamily:FF,lineHeight:1,margin:"0 0 4px"}}>£{price.toLocaleString()}</p>
-            <p style={{fontSize:11,color:C.warm,margin:0,fontFamily:FB}}>{note}</p>
-          </div>
-        ))}
-      </div>
+    <div style={{borderTop:`1px solid ${C.linen}`,marginTop:24,paddingTop:18,display:"flex",flexWrap:"wrap",alignItems:"baseline",gap:"8px 28px",fontFamily:"inherit"}}>
+      <span style={{fontSize:10,fontWeight:600,letterSpacing:"0.18em",textTransform:"uppercase",color:C.warm}}>Rates</span>
+      {items.map(({label,sub,price,note})=>(
+        <span key={label} style={{fontSize:13,color:C.indigo}}>
+          <span style={{color:C.twilight,fontWeight:600}}>{label}</span>
+          <span style={{color:C.warm}}> ({sub})</span>
+          <span style={{color:C.twilight}}> £{price.toLocaleString()}</span>
+          <span style={{color:C.warm}}> {note}</span>
+        </span>
+      ))}
+      <span style={{fontSize:11,color:C.warm,marginLeft:"auto"}}>Weekly stays: Sat – Sat</span>
     </div>
   );
 }
@@ -356,11 +345,11 @@ function BookingPage({active,setActive}){
   return(
     <div className="booking-portal portal-page" style={{maxWidth:960,margin:"0 auto",padding:"32px 24px"}}>
       <PortalHeader active={active} setActive={setActive} prop={p}/>
-      <PricingCard pricing={p.pricing}/>
       <div style={{border:`1px solid ${C.stone}`,background:C.white,padding:"28px"}}>
         <BookingPanel key={active} property={p}
           onBooked={(id,s,e)=>setPendingRanges(r=>({...r,[id]:[...r[id],{start:s,end:e}]}))}
           onReset={()=>fetchCalendar(true)}/>
+        <PricingNote pricing={p.pricing}/>
       </div>
     </div>
   );
