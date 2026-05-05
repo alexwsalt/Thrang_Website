@@ -527,8 +527,9 @@ export default function App(){
       {/* ── Header ── */}
       <header style={{background:C.parchment,borderBottom:`1px solid ${C.stone}`,position:"sticky",top:0,zIndex:100}}>
         <div style={{maxWidth:1100,margin:"0 auto",padding:"0 24px",display:"flex",alignItems:"center",justifyContent:"space-between",height:56}}>
-          <div onClick={()=>setPage("home")} style={{cursor:"pointer",display:"flex",alignItems:"center"}}>
+          <div onClick={()=>setPage("home")} style={{cursor:"pointer",display:"flex",alignItems:"center",gap:10}}>
             <img src={logoThrang} alt="Thrang Properties" style={{height:46,width:"auto",display:"block",flexShrink:0}}/>
+            <span style={{fontSize:19,fontWeight:500,color:C.twilight,fontFamily:FF,letterSpacing:"0.02em"}}>Thrang Properties</span>
           </div>
           <nav style={{display:"flex",alignItems:"center",gap:2}}>
             <button onClick={()=>setPage("home")} style={{background:"none",border:"none",padding:"6px 12px",fontSize:13,color:page==="home"?C.twilight:C.indigo,fontFamily:FB,fontWeight:page==="home"?600:400,borderBottom:`1.5px solid ${page==="home"?C.crimson:"transparent"}`,paddingBottom:4}}>
