@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import imgOldThrang from "./assets/Old Thrang Back.jpg";
 import imgThrangGarth from "./assets/Thrang Garth Back.jpg";
 import imgFrontBoth from "./assets/Front Both.jpg";
+import logoThrang from "./assets/Thrang Properties Logo.png";
 
 const PROPERTY_IMAGES = { oldThrang: imgOldThrang, thrangGarth: imgThrangGarth };
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw4isc3SUKhUmPkpRvQYet5WZ-PYd0An-VbOY6rKyUmRJjCVNbgw-_W9IwPJQc3A1ZN/exec";
@@ -526,29 +527,8 @@ export default function App(){
       {/* ── Header ── */}
       <header style={{background:C.parchment,borderBottom:`1px solid ${C.stone}`,position:"sticky",top:0,zIndex:100}}>
         <div style={{maxWidth:1100,margin:"0 auto",padding:"0 24px",display:"flex",alignItems:"center",justifyContent:"space-between",height:56}}>
-          <div onClick={()=>setPage("home")} style={{cursor:"pointer",display:"flex",alignItems:"center",gap:10}}>
-            {/* Mountain house scene logo */}
-            <svg viewBox="0 0 62 62" width="46" height="46" style={{display:"block",flexShrink:0}}>
-              {/* Sun */}
-              <circle cx="53" cy="10" r="5" fill="none" stroke={C.main} strokeWidth="1.8"/>
-              {/* Mountain/landscape curve */}
-              <path d="M2,21 C13,13 29,10 45,18" fill="none" stroke={C.main} strokeWidth="1.8" strokeLinecap="round"/>
-              {/* Ground line */}
-              <line x1="2" y1="56" x2="60" y2="56" stroke={C.main} strokeWidth="1.6"/>
-              {/* Left bush */}
-              <path d="M2,56 Q8,49 15,56" fill="none" stroke={C.main} strokeWidth="1.6"/>
-              {/* Left pine tree */}
-              <polyline points="6,56 12,37 18,56" fill="none" stroke={C.main} strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round"/>
-              {/* House body */}
-              <rect x="19" y="41" width="22" height="15" fill="none" stroke={C.main} strokeWidth="1.8"/>
-              {/* Roof */}
-              <polyline points="17,41 30,29 43,41" fill="none" stroke={C.main} strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round"/>
-              {/* Arched window */}
-              <rect x="24" y="46" width="12" height="8" rx="3" fill="none" stroke={C.main} strokeWidth="1.4"/>
-              {/* Right pine tree (taller) */}
-              <polyline points="44,56 53,30 62,56" fill="none" stroke={C.main} strokeWidth="1.6" strokeLinejoin="round" strokeLinecap="round"/>
-            </svg>
-            <span style={{fontSize:19,fontWeight:500,color:C.twilight,fontFamily:FF,letterSpacing:"0.02em"}}>Thrang Properties</span>
+          <div onClick={()=>setPage("home")} style={{cursor:"pointer",display:"flex",alignItems:"center"}}>
+            <img src={logoThrang} alt="Thrang Properties" style={{height:46,width:"auto",display:"block",flexShrink:0}}/>
           </div>
           <nav style={{display:"flex",alignItems:"center",gap:2}}>
             <button onClick={()=>setPage("home")} style={{background:"none",border:"none",padding:"6px 12px",fontSize:13,color:page==="home"?C.twilight:C.indigo,fontFamily:FB,fontWeight:page==="home"?600:400,borderBottom:`1.5px solid ${page==="home"?C.crimson:"transparent"}`,paddingBottom:4}}>
