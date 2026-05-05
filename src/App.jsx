@@ -4,6 +4,10 @@ import imgThrangGarth from "./assets/Thrang Garth Back.jpg";
 import imgFrontBoth from "./assets/Front Both.jpg";
 import logoThrang from "./assets/Thrang Properties Logo.png";
 
+const oldThrangPhotos = Object.values(import.meta.glob("./assets/Photos/Old Thrang/*.{jpg,jpeg,png,JPG,JPEG,PNG}", { eager: true, query: "?url", import: "default" }));
+const thrangGarthPhotos = Object.values(import.meta.glob("./assets/Photos/Thrang Garth/*.{jpg,jpeg,png,JPG,JPEG,PNG}", { eager: true, query: "?url", import: "default" }));
+const PROPERTY_PHOTOS = { oldThrang: oldThrangPhotos, thrangGarth: thrangGarthPhotos };
+
 const PROPERTY_IMAGES = { oldThrang: imgOldThrang, thrangGarth: imgThrangGarth };
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw4isc3SUKhUmPkpRvQYet5WZ-PYd0An-VbOY6rKyUmRJjCVNbgw-_W9IwPJQc3A1ZN/exec";
 
@@ -416,45 +420,47 @@ function CameraIcon({size=26,color="currentColor"}){
 /* ─── Gallery page ──────────────────────────────────────────────────────── */
 function GalleryPage({active,setActive}){
   const [lightbox,setLightbox]=useState(null);
-  const p=PROPERTIES[active];const COUNT=12;
+  const p=PROPERTIES[active];
+  const photos=PROPERTY_PHOTOS[active]||[];
+  const COUNT=photos.length;
   useEffect(()=>{setLightbox(null);},[active]);
   useEffect(()=>{
-    if(lightbox===null)return;
+    if(lightbox===null||COUNT===0)return;
     const h=(e)=>{
       if(e.key==="ArrowRight")setLightbox(i=>(i+1)%COUNT);
       else if(e.key==="ArrowLeft")setLightbox(i=>(i-1+COUNT)%COUNT);
       else if(e.key==="Escape")setLightbox(null);
     };
     window.addEventListener("keydown",h);return()=>window.removeEventListener("keydown",h);
-  },[lightbox]);
+  },[lightbox,COUNT]);
   return(
     <div className="booking-portal portal-page" style={{maxWidth:960,margin:"0 auto",padding:"32px 24px"}}>
       <PortalHeader active={active} setActive={setActive} prop={p}/>
       <div style={{border:`1px solid ${C.stone}`,background:C.white,padding:"24px"}}>
         <PortalLabel>Photo Gallery — {p.name}</PortalLabel>
-        <div style={{overflowY:"auto",maxHeight:560}}>
+        <div style={{overflowY:"auto",maxHeight:640}}>
           <div className="gallery-grid">
-            {Array.from({length:COUNT},(_,i)=>(
-              <div key={i} onClick={()=>setLightbox(i)}
-                style={{aspectRatio:"4/3",background:C.parchment,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:8,border:`1px solid ${C.stone}`,color:C.sand,cursor:"pointer",transition:"all 0.15s"}}
-                onMouseEnter={e=>{e.currentTarget.style.borderColor=C.crimson;e.currentTarget.style.background=C.linen;}}
-                onMouseLeave={e=>{e.currentTarget.style.borderColor=C.stone;e.currentTarget.style.background=C.parchment;}}>
-                <CameraIcon color={C.sand}/><span style={{fontSize:11,color:C.warm,letterSpacing:"0.05em",fontFamily:"inherit"}}>Photo {i+1}</span>
+            {photos.map((src,i)=>(
+              <div key={src} onClick={()=>setLightbox(i)}
+                style={{aspectRatio:"4/3",background:C.parchment,border:`1px solid ${C.stone}`,cursor:"pointer",transition:"all 0.15s",overflow:"hidden",position:"relative"}}
+                onMouseEnter={e=>{e.currentTarget.style.borderColor=C.crimson;}}
+                onMouseLeave={e=>{e.currentTarget.style.borderColor=C.stone;}}>
+                <img src={src} alt={`${p.name} photo ${i+1}`} loading="lazy" style={{width:"100%",height:"100%",objectFit:"cover",display:"block"}}/>
               </div>
             ))}
+            {COUNT===0&&(
+              <div style={{gridColumn:"1 / -1",padding:"40px",textAlign:"center",color:C.warm,fontFamily:"inherit"}}>No photos available yet.</div>
+            )}
           </div>
         </div>
       </div>
-      {lightbox!==null&&(
+      {lightbox!==null&&photos[lightbox]&&(
         <div onClick={()=>setLightbox(null)} style={{position:"fixed",inset:0,background:"rgba(28,46,61,0.96)",zIndex:1000,display:"flex",alignItems:"center",justifyContent:"center"}}>
           <button onClick={()=>setLightbox(null)} style={{position:"absolute",top:20,right:24,background:"transparent",border:"1px solid rgba(255,255,255,0.2)",width:40,height:40,cursor:"pointer",color:"#fff",fontSize:20,display:"flex",alignItems:"center",justifyContent:"center"}}>×</button>
           <div style={{position:"absolute",top:26,left:"50%",transform:"translateX(-50%)",color:"rgba(255,255,255,0.4)",fontSize:12,fontFamily:FB,letterSpacing:"0.14em"}}>{lightbox+1} / {COUNT}</div>
           <button className="lb-prev" onClick={e=>{e.stopPropagation();setLightbox(i=>(i-1+COUNT)%COUNT);}} style={{position:"absolute",left:20,background:"transparent",border:"1px solid rgba(255,255,255,0.2)",width:48,height:48,cursor:"pointer",color:"#fff",fontSize:24,display:"flex",alignItems:"center",justifyContent:"center"}}>‹</button>
-          <div onClick={e=>e.stopPropagation()} style={{width:"min(80vw,860px)",aspectRatio:"4/3",background:"rgba(255,255,255,0.02)",border:"1px solid rgba(255,255,255,0.07)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",gap:14}}>
-            <CameraIcon size={44} color="rgba(255,255,255,0.12)"/>
-            <span style={{fontSize:14,letterSpacing:"0.08em",color:"rgba(255,255,255,0.28)",fontFamily:FB}}>Photo {lightbox+1} — {p.name}</span>
-            <span style={{fontSize:11,color:"rgba(255,255,255,0.18)",fontFamily:FB}}>Image coming soon</span>
-          </div>
+          <img onClick={e=>e.stopPropagation()} src={photos[lightbox]} alt={`${p.name} photo ${lightbox+1}`}
+            style={{maxWidth:"90vw",maxHeight:"85vh",objectFit:"contain",display:"block"}}/>
           <button className="lb-next" onClick={e=>{e.stopPropagation();setLightbox(i=>(i+1)%COUNT);}} style={{position:"absolute",right:20,background:"transparent",border:"1px solid rgba(255,255,255,0.2)",width:48,height:48,cursor:"pointer",color:"#fff",fontSize:24,display:"flex",alignItems:"center",justifyContent:"center"}}>›</button>
         </div>
       )}
