@@ -97,9 +97,9 @@ function isPast(date){ const t=new Date();t.setHours(0,0,0,0);const d=new Date(d
 function formatDate(d){ if(!d)return""; return d.toLocaleDateString("en-GB",{day:"numeric",month:"long",year:"numeric"}); }
 function nightsBetween(a,b){ if(!a||!b)return 0; return Math.round(Math.abs((b-a)/(1000*60*60*24))); }
 function getDaysInMonth(y,m){ return new Date(y,m+1,0).getDate(); }
-function getFirstDay(y,m){ return new Date(y,m,1).getDay(); }
+function getFirstDay(y,m){ const d=new Date(y,m,1).getDay(); return d===0?6:d-1; }
 const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
-const DAYS=["Su","Mo","Tu","We","Th","Fr","Sa"];
+const DAYS=["Mo","Tu","We","Th","Fr","Sa","Su"];
 
 /* ─── Thin rule ─────────────────────────────────────────────────────────── */
 function Rule({ color=C.stone, margin="16px 0" }){
