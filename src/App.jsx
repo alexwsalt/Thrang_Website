@@ -271,7 +271,7 @@ function BookingPanel({property,onBooked,onReset}){
     if(!form.name||!form.email){setError("Please enter your name and email address.");return;}
     setError("");
     const params=new URLSearchParams({property:property.name,checkIn:checkIn.toISOString(),checkOut:checkOut.toISOString(),nights:String(nights),guestName:form.name,guestEmail:form.email,guestPhone:form.phone||"—",message:form.message||"—"});
-    const img=new Image();img.src=APPS_SCRIPT_URL+"?"+params.toString();
+    fetch(APPS_SCRIPT_URL,{method:"POST",mode:"no-cors",body:params}).catch(()=>{});
     onBooked(property.id,checkIn,checkOut);setSubmitted(true);
   };
   const reset=()=>{setSubmitted(false);setCheckIn(null);setCheckOut(null);setForm({name:"",email:"",phone:"",message:""});onReset&&onReset();};
