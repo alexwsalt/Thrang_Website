@@ -491,10 +491,17 @@ export default function App(){
   const [mounted,setMounted]=useState(false);
   useEffect(()=>{setTimeout(()=>setMounted(true),50);},[]);
   const inPortal=PORTAL_PAGES.includes(page);
+  const navigate=(p)=>{ window.history.pushState({page:p},"",""); setPage(p); };
   const login=()=>{
-    if(password===ACCESS_PASSWORD){setPwError("");setPage("booking");}
+    if(password===ACCESS_PASSWORD){setPwError("");navigate("booking");}
     else setPwError("Incorrect password. Please try again.");
   };
+  useEffect(()=>{
+    window.history.replaceState({page:"home"},"","");
+    const onPop=(e)=>setPage(e.state?.page||"home");
+    window.addEventListener("popstate",onPop);
+    return()=>window.removeEventListener("popstate",onPop);
+  },[]);
 
   return(
     <div style={{fontFamily:FB,background:C.parchment,minHeight:"100vh",display:"flex",flexDirection:"column",color:C.twilight}}>
@@ -544,12 +551,12 @@ export default function App(){
       {/* ── Header ── */}
       <header style={{background:C.parchment,borderBottom:`1px solid ${C.stone}`,position:"sticky",top:0,zIndex:100}}>
         <div style={{maxWidth:1100,margin:"0 auto",padding:"0 24px",display:"flex",alignItems:"center",justifyContent:"space-between",height:56}}>
-          <div onClick={()=>setPage("home")} style={{cursor:"pointer",display:"flex",alignItems:"center",gap:10}}>
+          <div onClick={()=>navigate("home")} style={{cursor:"pointer",display:"flex",alignItems:"center",gap:10}}>
             <img src={logoThrang} alt="Thrang Properties" style={{height:46,width:"auto",display:"block",flexShrink:0}}/>
             <span style={{fontSize:19,fontWeight:500,color:C.twilight,fontFamily:FF,letterSpacing:"0.02em"}}>Thrang Properties</span>
           </div>
           <nav style={{display:"flex",alignItems:"center",gap:2}}>
-            <button onClick={()=>setPage("home")} style={{background:"none",border:"none",padding:"6px 12px",fontSize:13,color:page==="home"?C.twilight:C.indigo,fontFamily:FB,fontWeight:page==="home"?600:400,borderBottom:`1.5px solid ${page==="home"?C.crimson:"transparent"}`,paddingBottom:4}}>
+            <button onClick={()=>navigate("home")} style={{background:"none",border:"none",padding:"6px 12px",fontSize:13,color:page==="home"?C.twilight:C.indigo,fontFamily:FB,fontWeight:page==="home"?600:400,borderBottom:`1.5px solid ${page==="home"?C.crimson:"transparent"}`,paddingBottom:4}}>
               Home
             </button>
             {inPortal?(
@@ -557,7 +564,7 @@ export default function App(){
                 {[["info","Info"],["gallery","Gallery"],["booking","Book"]].map(([pg,label])=>{
                   const cur=page===pg;
                   return(
-                    <button key={pg} onClick={()=>setPage(pg)} className="portal-nav-btn"
+                    <button key={pg} onClick={()=>navigate(pg)} className="portal-nav-btn"
                       style={{padding:"6px 12px",paddingBottom:4,background:"none",border:"none",borderBottom:`1.5px solid ${cur?C.crimson:"transparent"}`,color:cur?C.crimson:C.indigo,fontSize:13,fontFamily:FB,fontWeight:cur?600:400,transition:"all 0.12s"}}>
                       {label}
                     </button>
@@ -565,7 +572,7 @@ export default function App(){
                 })}
               </>
             ):(
-              <button onClick={()=>setPage("login")} style={{background:C.main,color:"#fff",border:`1px solid ${C.main}`,padding:"7px 20px",fontSize:13,fontFamily:FB,fontWeight:500,letterSpacing:"0.04em",marginLeft:8}}>
+              <button onClick={()=>navigate("login")} style={{background:C.main,color:"#fff",border:`1px solid ${C.main}`,padding:"7px 20px",fontSize:13,fontFamily:FB,fontWeight:500,letterSpacing:"0.04em",marginLeft:8}}>
                 Book Now
               </button>
             )}
@@ -587,7 +594,7 @@ export default function App(){
                 <p style={{fontSize:10,letterSpacing:"0.3em",textTransform:"uppercase",color:C.frost,opacity:0.85,marginBottom:22,fontFamily:FB}}>Great Langdale Valley · Lake District</p>
                 <h1 className="hero-title" style={{fontSize:62,fontWeight:400,margin:"0 0 18px",letterSpacing:"0.12em",lineHeight:1.05,fontFamily:FH}}>Thrang Properties</h1>
                 <p className="hero-sub" style={{fontSize:17,opacity:0.78,marginBottom:48,lineHeight:1.7,fontFamily:FB,fontWeight:300}}>Two exceptional properties in the heart of the Lakeland fells</p>
-                <button onClick={()=>setPage("login")} style={{background:"transparent",color:"#fff",border:"1px solid rgba(255,255,255,0.5)",padding:"13px 40px",fontSize:13,fontFamily:FB,fontWeight:500,letterSpacing:"0.1em",textTransform:"uppercase",transition:"background 0.2s"}}>
+                <button onClick={()=>navigate("login")} style={{background:"transparent",color:"#fff",border:"1px solid rgba(255,255,255,0.5)",padding:"13px 40px",fontSize:13,fontFamily:FB,fontWeight:500,letterSpacing:"0.1em",textTransform:"uppercase",transition:"background 0.2s"}}>
                   Request a Stay
                 </button>
               </div>
@@ -615,7 +622,7 @@ export default function App(){
                     <p style={{fontSize:14,opacity:0.8,margin:"0 0 22px",fontFamily:FB,fontWeight:300,maxWidth:520,lineHeight:1.8}}>{PROPERTIES[homeActive].description}</p>
                     <div style={{display:"flex",alignItems:"center",gap:14,flexWrap:"wrap"}}>
                       <span style={{border:"1px solid rgba(160,210,219,0.45)",padding:"5px 16px",fontSize:12,fontFamily:FB,letterSpacing:"0.06em",color:C.frost}}>Sleeps {PROPERTIES[homeActive].sleeps}</span>
-                      <button onClick={()=>setPage("login")} style={{background:"transparent",color:"#fff",border:"1px solid rgba(255,255,255,0.45)",padding:"7px 22px",fontSize:12,fontFamily:FB,fontWeight:500,letterSpacing:"0.08em",textTransform:"uppercase"}}>Request a Stay</button>
+                      <button onClick={()=>navigate("login")} style={{background:"transparent",color:"#fff",border:"1px solid rgba(255,255,255,0.45)",padding:"7px 22px",fontSize:12,fontFamily:FB,fontWeight:500,letterSpacing:"0.08em",textTransform:"uppercase"}}>Request a Stay</button>
                     </div>
                   </div>
                 </div>
@@ -640,7 +647,7 @@ export default function App(){
               <p style={{fontSize:10,letterSpacing:"0.3em",textTransform:"uppercase",color:C.frost,marginBottom:20,fontFamily:FB,opacity:0.8}}>Exclusive access</p>
               <h2 style={{fontSize:36,fontWeight:400,marginBottom:16,fontFamily:FF,letterSpacing:"-0.5px"}}>Ready to escape to Langdale?</h2>
               <p style={{fontSize:15,opacity:0.55,marginBottom:44,fontFamily:FB,fontWeight:300,maxWidth:400,margin:"0 auto 44px",lineHeight:1.8}}>Use your exclusive access code to check availability and make a request.</p>
-              <button onClick={()=>setPage("login")} style={{background:"transparent",color:"#fff",border:"1px solid rgba(160,210,219,0.45)",padding:"13px 40px",fontSize:13,fontFamily:FB,fontWeight:500,letterSpacing:"0.1em",textTransform:"uppercase"}}>
+              <button onClick={()=>navigate("login")} style={{background:"transparent",color:"#fff",border:"1px solid rgba(160,210,219,0.45)",padding:"13px 40px",fontSize:13,fontFamily:FB,fontWeight:500,letterSpacing:"0.1em",textTransform:"uppercase"}}>
                 Access Booking Portal
               </button>
             </section>
@@ -661,7 +668,7 @@ export default function App(){
               <button onClick={login} style={{width:"100%",background:C.main,color:"#fff",border:`1px solid ${C.main}`,padding:"13px",fontSize:14,fontFamily:FB,fontWeight:500,marginBottom:14,letterSpacing:"0.06em"}}>
                 Enter
               </button>
-              <button onClick={()=>setPage("home")} style={{background:"none",border:"none",color:C.warm,fontSize:12,fontFamily:FB,letterSpacing:"0.04em"}}>← Back to home</button>
+              <button onClick={()=>navigate("home")} style={{background:"none",border:"none",color:C.warm,fontSize:12,fontFamily:FB,letterSpacing:"0.04em"}}>← Back to home</button>
               <p style={{fontSize:10,color:C.sand,marginTop:20,fontFamily:FB,letterSpacing:"0.04em"}}>Access code: <code style={{background:C.parchment,padding:"2px 7px",color:C.indigo,fontFamily:"monospace"}}>{ACCESS_PASSWORD}</code></p>
             </div>
           </div>
