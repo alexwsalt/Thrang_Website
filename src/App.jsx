@@ -271,6 +271,7 @@ function BookingPanel({property,onBooked,onReset}){
   const handleSubmit=()=>{
     if(!checkIn||!checkOut){setError("Please select check-in and check-out dates.");return;}
     if(!form.name||!form.email){setError("Please enter your name and email address.");return;}
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email.trim())){setError("Please enter a valid email address (e.g. jane@email.com).");return;}
     setError("");
     const params=new URLSearchParams({property:property.name,checkIn:checkIn.toISOString(),checkOut:checkOut.toISOString(),nights:String(nights),guestName:form.name,guestEmail:form.email,guestPhone:form.phone||"—",message:form.message||"—"});
     const sent=navigator.sendBeacon&&navigator.sendBeacon(API_BOOKING,params);
