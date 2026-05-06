@@ -9,7 +9,7 @@ const thrangGarthPhotos = Object.values(import.meta.glob("./assets/Photos/Thrang
 const PROPERTY_PHOTOS = { oldThrang: oldThrangPhotos, thrangGarth: thrangGarthPhotos };
 
 const PROPERTY_IMAGES = { oldThrang: imgOldThrang, thrangGarth: imgThrangGarth };
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw4isc3SUKhUmPkpRvQYet5WZ-PYd0An-VbOY6rKyUmRJjCVNbgw-_W9IwPJQc3A1ZN/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHoZPrD6ue8kPhoo_Hu0G5pAomHe9Exrp3lSaBerWiX9RLsKecKp3hp1-egAZXptsVDg/exec";
 
 /* ─── Colour palette ────────────────────────────────────────────────────── */
 const C = {
