@@ -10,6 +10,8 @@ const PROPERTY_PHOTOS = { oldThrang: oldThrangPhotos, thrangGarth: thrangGarthPh
 
 const PROPERTY_IMAGES = { oldThrang: imgOldThrang, thrangGarth: imgThrangGarth };
 const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHoZPrD6ue8kPhoo_Hu0G5pAomHe9Exrp3lSaBerWiX9RLsKecKp3hp1-egAZXptsVDg/exec";
+const API_EVENTS  = "/api/events";
+const API_BOOKING = "/api/booking";
 
 /* ─── Colour palette ────────────────────────────────────────────────────── */
 const C = {
@@ -271,8 +273,8 @@ function BookingPanel({property,onBooked,onReset}){
     if(!form.name||!form.email){setError("Please enter your name and email address.");return;}
     setError("");
     const params=new URLSearchParams({property:property.name,checkIn:checkIn.toISOString(),checkOut:checkOut.toISOString(),nights:String(nights),guestName:form.name,guestEmail:form.email,guestPhone:form.phone||"—",message:form.message||"—"});
-    const sent=navigator.sendBeacon&&navigator.sendBeacon(APPS_SCRIPT_URL,params);
-    if(!sent) fetch(APPS_SCRIPT_URL,{method:"POST",mode:"no-cors",body:params}).catch(()=>{});
+    const sent=navigator.sendBeacon&&navigator.sendBeacon(API_BOOKING,params);
+    if(!sent) fetch(API_BOOKING,{method:"POST",body:params}).catch(()=>{});
     onBooked(property.id,checkIn,checkOut);setSubmitted(true);
   };
   const reset=()=>{setSubmitted(false);setCheckIn(null);setCheckOut(null);setForm({name:"",email:"",phone:"",message:""});onReset&&onReset();};
@@ -341,7 +343,7 @@ function BookingPage({active,setActive}){
   const fetchCalendar=(bust=false)=>{
     try{if(!bust){const cached=JSON.parse(localStorage.getItem(CACHE_KEY)||"null");if(cached&&Date.now()-cached.ts<CACHE_TTL){applyEvents(cached.events);return()=>{};} }}catch(_){}
     const ctrl=new AbortController();
-    fetch(APPS_SCRIPT_URL+"?action=getEvents",{signal:ctrl.signal,redirect:"follow"})
+    fetch(API_EVENTS,{signal:ctrl.signal})
       .then(r=>r.json())
       .then(events=>{applyEvents(events);try{localStorage.setItem(CACHE_KEY,JSON.stringify({ts:Date.now(),events}));}catch(_){}})
       .catch(()=>{});
