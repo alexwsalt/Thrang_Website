@@ -260,6 +260,13 @@ function BookingPanel({property,onBooked,onReset}){
   const [form,setForm]=useState({name:"",email:"",phone:"",message:""});
   const [submitted,setSubmitted]=useState(false);
   const [error,setError]=useState("");
+  const [emailVerified,setEmailVerified]=useState(false);
+  const [otpToken,setOtpToken]=useState(null);
+  const [otpStep,setOtpStep]=useState(false);
+  const [otpInput,setOtpInput]=useState("");
+  const [otpSending,setOtpSending]=useState(false);
+  const [otpVerifying,setOtpVerifying]=useState(false);
+  const [otpError,setOtpError]=useState("");
   const handleSelect=date=>{
     if(!checkIn||(checkIn&&checkOut)){setCheckIn(date);setCheckOut(null);return;}
     if(isSameDay(date,checkIn)){setCheckIn(null);return;}
@@ -267,18 +274,41 @@ function BookingPanel({property,onBooked,onReset}){
     if(property.bookedRanges.some(r=>!(r.end<s||r.start>e))){setError("That range includes unavailable dates — please choose again.");return;}
     setError("");setCheckIn(s);setCheckOut(e);
   };
+  const EMAIL_RE=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+  const sendOtp=async()=>{
+    if(!EMAIL_RE.test(form.email.trim()))return;
+    setOtpSending(true);setOtpError("");
+    try{
+      const r=await fetch("/api/send-otp",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:form.email.trim()})});
+      const d=await r.json();
+      if(!r.ok)throw new Error(d.error||"Failed to send");
+      setOtpToken(d.token);setOtpStep(true);
+    }catch(e){setOtpError(e.message||"Could not send code. Please try again.");}
+    finally{setOtpSending(false);}
+  };
+  const verifyOtp=async()=>{
+    setOtpVerifying(true);setOtpError("");
+    try{
+      const r=await fetch("/api/verify-otp",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({email:form.email.trim(),otp:otpInput,token:otpToken})});
+      const d=await r.json();
+      if(d.valid){setEmailVerified(true);setOtpStep(false);setOtpInput("");}
+      else setOtpError(d.error==="code expired"?"Code expired — please request a new one.":"Incorrect code, please try again.");
+    }catch{setOtpError("Verification failed. Please try again.");}
+    finally{setOtpVerifying(false);}
+  };
   const nights=nightsBetween(checkIn,checkOut);
   const handleSubmit=()=>{
     if(!checkIn||!checkOut){setError("Please select check-in and check-out dates.");return;}
     if(!form.name||!form.email){setError("Please enter your name and email address.");return;}
     if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email.trim())){setError("Please enter a valid email address (e.g. jane@email.com).");return;}
+    if(!emailVerified){setError("Please verify your email address before submitting.");return;}
     setError("");
     const params=new URLSearchParams({property:property.name,checkIn:checkIn.toISOString(),checkOut:checkOut.toISOString(),nights:String(nights),guestName:form.name,guestEmail:form.email,guestPhone:form.phone||"—",message:form.message||"—"});
     const sent=navigator.sendBeacon&&navigator.sendBeacon(API_BOOKING,params);
     if(!sent) fetch(API_BOOKING,{method:"POST",body:params}).catch(()=>{});
     onBooked(property.id,checkIn,checkOut);setSubmitted(true);
   };
-  const reset=()=>{setSubmitted(false);setCheckIn(null);setCheckOut(null);setForm({name:"",email:"",phone:"",message:""});onReset&&onReset();};
+  const reset=()=>{setSubmitted(false);setCheckIn(null);setCheckOut(null);setForm({name:"",email:"",phone:"",message:""});setEmailVerified(false);setOtpStep(false);setOtpToken(null);setOtpInput("");setOtpError("");onReset&&onReset();};
   const inp={padding:"11px 13px",border:`1px solid ${C.stone}`,fontSize:14,color:C.twilight,background:C.white,outline:"none",width:"100%",boxSizing:"border-box",transition:"border-color 0.15s",fontFamily:"inherit"};
   const lbl={fontSize:10,fontWeight:600,color:C.indigo,letterSpacing:"0.16em",textTransform:"uppercase",marginBottom:6,display:"block",fontFamily:"inherit"};
   if(submitted)return(
@@ -311,7 +341,48 @@ function BookingPanel({property,onBooked,onReset}){
         {[{label:"Full Name *",key:"name",type:"text",ph:"Jane Smith"},{label:"Email Address *",key:"email",type:"email",ph:"jane@email.com"},{label:"Phone Number",key:"phone",type:"text",ph:"+44 7700 000000"},{label:"Message",key:"message",type:"area",ph:"Any questions or special requests…"}].map(({label,key,type,ph})=>(
           <div key={key}>
             <label style={lbl}>{label}</label>
-            {type==="area"?<textarea placeholder={ph} value={form[key]} onChange={e=>setForm(f=>({...f,[key]:e.target.value}))} style={{...inp,height:80,resize:"vertical"}}/>:<input type={type} placeholder={ph} value={form[key]} onChange={e=>setForm(f=>({...f,[key]:e.target.value}))} style={inp}/>}
+            {key==="email"?(
+              <>
+                <input type="email" placeholder={ph} value={form.email} readOnly={emailVerified}
+                  onChange={e=>{setForm(f=>({...f,email:e.target.value}));setEmailVerified(false);setOtpStep(false);setOtpToken(null);setOtpError("");}}
+                  style={{...inp,borderColor:emailVerified?C.evergreen:undefined}}/>
+                {emailVerified?(
+                  <div style={{display:"flex",alignItems:"center",gap:8,marginTop:5}}>
+                    <span style={{fontSize:11,color:C.evergreen,fontWeight:600,fontFamily:"inherit"}}>✓ Email verified</span>
+                    <button type="button" onClick={()=>{setEmailVerified(false);setOtpStep(false);setOtpToken(null);setOtpInput("");setOtpError("");}}
+                      style={{background:"none",border:"none",color:C.warm,fontSize:11,fontFamily:"inherit",cursor:"pointer",textDecoration:"underline",padding:0}}>
+                      Edit
+                    </button>
+                  </div>
+                ):(
+                  <div style={{marginTop:8}}>
+                    {!otpStep?(
+                      <button type="button" onClick={sendOtp}
+                        disabled={otpSending||!EMAIL_RE.test(form.email.trim())}
+                        style={{background:C.main,color:"#fff",border:`1px solid ${C.main}`,padding:"8px 16px",fontSize:12,fontFamily:"inherit",cursor:"pointer",letterSpacing:"0.04em",opacity:(otpSending||!EMAIL_RE.test(form.email.trim()))?0.5:1}}>
+                        {otpSending?"Sending…":"Verify Email →"}
+                      </button>
+                    ):(
+                      <div style={{display:"flex",gap:8,flexWrap:"wrap",alignItems:"flex-start"}}>
+                        <input type="text" placeholder="6-digit code" value={otpInput} maxLength={6}
+                          onChange={e=>setOtpInput(e.target.value.replace(/\D/g,""))}
+                          style={{...inp,width:140,letterSpacing:"0.2em",textAlign:"center"}}/>
+                        <button type="button" onClick={verifyOtp} disabled={otpVerifying||otpInput.length!==6}
+                          style={{background:C.evergreen,color:"#fff",border:`1px solid ${C.evergreen}`,padding:"11px 16px",fontSize:12,fontFamily:"inherit",cursor:"pointer",opacity:(otpVerifying||otpInput.length!==6)?0.5:1}}>
+                          {otpVerifying?"Checking…":"Confirm →"}
+                        </button>
+                        <button type="button" onClick={sendOtp} disabled={otpSending}
+                          style={{background:"none",border:`1px solid ${C.stone}`,color:C.warm,padding:"11px 14px",fontSize:11,fontFamily:"inherit",cursor:"pointer"}}>
+                          Resend
+                        </button>
+                      </div>
+                    )}
+                    {otpError&&<p style={{fontSize:11,color:C.err,marginTop:6,fontFamily:"inherit"}}>{otpError}</p>}
+                    {otpStep&&!otpError&&<p style={{fontSize:11,color:C.warm,marginTop:6,fontFamily:"inherit"}}>Code sent — check your inbox (valid 10 min).</p>}
+                  </div>
+                )}
+              </>
+            ):type==="area"?<textarea placeholder={ph} value={form[key]} onChange={e=>setForm(f=>({...f,[key]:e.target.value}))} style={{...inp,height:80,resize:"vertical"}}/>:<input type={type} placeholder={ph} value={form[key]} onChange={e=>setForm(f=>({...f,[key]:e.target.value}))} style={inp}/>}
           </div>
         ))}
         <button onClick={handleSubmit} style={{background:C.main,color:"#fff",border:`1px solid ${C.main}`,padding:"13px 28px",cursor:"pointer",fontSize:14,fontFamily:"inherit",fontWeight:600,letterSpacing:"0.06em",marginTop:4,transition:"background 0.15s"}}>
