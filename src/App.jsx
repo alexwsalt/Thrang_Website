@@ -61,6 +61,7 @@ const PROPERTIES = {
       { name: "Bedroom 2", beds: "2 single beds" },
       { name: "Bedroom 3", beds: "1 single bed" },
     ],
+    bathrooms: ["2 Toilets", "1 Shower"],
     pricing: { winter: 675, summer: 810, weekend: 450 },
   },
   thrangGarth: {
@@ -74,6 +75,7 @@ const PROPERTIES = {
       { name: "Bedroom 3", beds: "¾ double bed" },
       { name: "Bedroom 4", beds: "5 single beds" },
     ],
+    bathrooms: ["2 Toilets", "2 Showers"],
     pricing: { winter: 850, summer: 1040, weekend: 500 },
   },
 };
@@ -400,6 +402,14 @@ function InfoPage({active,setActive}){
             <div key={i} style={row}>
               <span style={{fontSize:14,color:C.warm,fontFamily:"inherit"}}>{bed.name}</span>
               <span style={{fontSize:14,fontWeight:600,color:C.twilight,fontFamily:"inherit",textAlign:"right",maxWidth:"55%"}}>{bed.beds}</span>
+            </div>
+          ))}
+        </div>
+        <div style={{border:`1px solid ${C.stone}`,background:C.white,padding:"22px 24px"}}>
+          <PortalLabel>Bathrooms</PortalLabel>
+          {p.bathrooms.map((item,i)=>(
+            <div key={i} style={row}>
+              <span style={{fontSize:14,fontWeight:600,color:C.twilight,fontFamily:"inherit"}}>{item}</span>
             </div>
           ))}
         </div>
