@@ -404,9 +404,7 @@ function InfoPage({active,setActive}){
               <span style={{fontSize:14,fontWeight:600,color:C.twilight,fontFamily:"inherit",textAlign:"right",maxWidth:"55%"}}>{bed.beds}</span>
             </div>
           ))}
-        </div>
-        <div style={{border:`1px solid ${C.stone}`,background:C.white,padding:"22px 24px"}}>
-          <PortalLabel>Bathrooms</PortalLabel>
+          <div style={{marginTop:20}}><PortalLabel>Bathrooms</PortalLabel></div>
           {p.bathrooms.map((item,i)=>(
             <div key={i} style={row}>
               <span style={{fontSize:14,fontWeight:600,color:C.twilight,fontFamily:"inherit"}}>{item}</span>
