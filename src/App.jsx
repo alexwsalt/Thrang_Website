@@ -54,7 +54,7 @@ const PROPERTIES = {
   oldThrang: {
     id: "oldThrang", name: "Old Thrang", sleeps: 7,
     tagline: "A traditional Lakeland farmhouse for up to 7 guests",
-    description: "Old Thrang is a beautifully restored Lakeland farmhouse nestled in the Great Langdale Valley. With original stone walls and oak beams, it blends rustic charm with modern comfort — the perfect retreat for a group looking to escape to the fells.",
+    description: "Old Thrang is a beautifully restored Lakeland farmhouse nestled in Chapel Stile, in the Langdale Valley. With original stone walls and oak beams, it blends rustic charm with modern comfort — the perfect retreat for a group looking to escape to the fells.",
     parking: 2,
     bedrooms: [
       { name: "Bedroom 1", beds: "Double bed + 2 single beds" },
@@ -67,7 +67,7 @@ const PROPERTIES = {
   thrangGarth: {
     id: "thrangGarth", name: "Thrang Garth", sleeps: 11,
     tagline: "A spacious Lakeland retreat for up to 11 guests",
-    description: "Thrang Garth is a generous, characterful property perfect for larger groups seeking the very best of the Lake District. Set within the stunning Great Langdale Valley, it offers ample space, beautiful interiors, and direct access to some of the finest walking in England.",
+    description: "Thrang Garth is a generous, characterful property perfect for larger groups seeking the very best of the Lake District. Set within the stunning Langdale Valley at Chapel Stile, it offers ample space, beautiful interiors, and direct access to some of the finest walking in England.",
     parking: 3,
     bedrooms: [
       { name: "Bedroom 1", beds: "Double bed + cot" },
@@ -176,7 +176,7 @@ function PortalHeader({ active, setActive, prop }){
     <div style={{marginBottom:24,paddingBottom:20,borderBottom:`1px solid ${C.stone}`}}>
       <div style={{display:"flex",alignItems:"flex-end",justifyContent:"space-between",flexWrap:"wrap",gap:16}}>
         <div>
-          <p style={{fontSize:10,letterSpacing:"0.22em",textTransform:"uppercase",color:C.crimson,margin:"0 0 6px",fontFamily:FB}}>Great Langdale Valley · Lake District</p>
+          <p style={{fontSize:10,letterSpacing:"0.22em",textTransform:"uppercase",color:C.crimson,margin:"0 0 6px",fontFamily:FB}}>Chapel Stile · Langdale Valley</p>
           <h1 style={{fontSize:26,fontWeight:500,color:C.twilight,margin:"0 0 4px",fontFamily:FF,letterSpacing:"0.01em"}}>{prop.name}</h1>
           <p style={{fontSize:14,color:C.warm,margin:0,fontFamily:FB}}>{prop.tagline}</p>
         </div>
@@ -389,7 +389,7 @@ function InfoPage({active,setActive}){
       <div className="info-card-grid" style={{marginBottom:16}}>
         <div style={{border:`1px solid ${C.stone}`,background:C.white,padding:"22px 24px"}}>
           <PortalLabel>Property Overview</PortalLabel>
-          {[["Location","Great Langdale Valley, Lake District"],["Sleeps",String(p.sleeps)],["Bedrooms",String(p.bedrooms.length)],["Parking",`${p.parking} spaces`],["Type","Self-catering holiday let"]].map(([label,value])=>(
+          {[["Location","Chapel Stile, Langdale Valley"],["Sleeps",String(p.sleeps)],["Bedrooms",String(p.bedrooms.length)],["Parking",`${p.parking} spaces`],["Type","Self-catering holiday let"]].map(([label,value])=>(
             <div key={label} style={row}>
               <span style={{fontSize:14,color:C.warm,fontFamily:"inherit"}}>{label}</span>
               <span style={{fontSize:14,fontWeight:600,color:C.twilight,fontFamily:"inherit",textAlign:"right",maxWidth:"55%"}}>{value}</span>
@@ -599,7 +599,7 @@ export default function App(){
               <img src={imgFrontBoth} alt="Thrang" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}/>
               <div style={{position:"absolute",inset:0,background:"linear-gradient(160deg,rgba(42,74,94,0.82) 0%,rgba(8,45,15,0.52) 100%)"}}/>
               <div style={{position:"relative",textAlign:"center",color:"#fff",padding:"60px 24px",maxWidth:620}}>
-                <p style={{fontSize:10,letterSpacing:"0.3em",textTransform:"uppercase",color:C.frost,opacity:0.85,marginBottom:22,fontFamily:FB}}>Great Langdale Valley · Lake District</p>
+                <p style={{fontSize:10,letterSpacing:"0.3em",textTransform:"uppercase",color:C.frost,opacity:0.85,marginBottom:22,fontFamily:FB}}>Chapel Stile · Langdale Valley</p>
                 <h1 className="hero-title" style={{fontSize:62,fontWeight:400,margin:"0 0 18px",letterSpacing:"0.12em",lineHeight:1.05,fontFamily:FH}}>Thrang Properties</h1>
                 <p className="hero-sub" style={{fontSize:17,opacity:0.78,marginBottom:48,lineHeight:1.7,fontFamily:FB,fontWeight:300}}>Two exceptional properties in the heart of the Lakeland fells</p>
                 <button onClick={()=>navigate("login")} style={{background:"transparent",color:"#fff",border:"1px solid rgba(255,255,255,0.5)",padding:"13px 40px",fontSize:13,fontFamily:FB,fontWeight:500,letterSpacing:"0.1em",textTransform:"uppercase",transition:"background 0.2s"}}>
@@ -625,7 +625,7 @@ export default function App(){
                   <img key={homeActive} src={PROPERTY_IMAGES[homeActive]} alt={PROPERTIES[homeActive].name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
                   <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,transparent 28%,rgba(42,74,94,0.90))"}}/>
                   <div className="showcase-text" style={{position:"absolute",bottom:36,left:40,right:40,color:"#fff"}}>
-                    <p style={{fontSize:10,letterSpacing:"0.26em",textTransform:"uppercase",color:C.frost,opacity:0.8,marginBottom:10,fontFamily:FB}}>Great Langdale Valley · Lake District</p>
+                    <p style={{fontSize:10,letterSpacing:"0.26em",textTransform:"uppercase",color:C.frost,opacity:0.8,marginBottom:10,fontFamily:FB}}>Chapel Stile · Langdale Valley</p>
                     <h2 style={{fontSize:32,fontWeight:400,margin:"0 0 12px",fontFamily:FF,letterSpacing:"0.01em"}}>{PROPERTIES[homeActive].name}</h2>
                     <p style={{fontSize:14,opacity:0.8,margin:"0 0 22px",fontFamily:FB,fontWeight:300,maxWidth:520,lineHeight:1.8}}>{PROPERTIES[homeActive].description}</p>
                     <div style={{display:"flex",alignItems:"center",gap:14,flexWrap:"wrap"}}>
@@ -688,7 +688,7 @@ export default function App(){
       </main>
 
       <footer style={{background:C.mainD,borderTop:`1px solid rgba(255,255,255,0.08)`,padding:"28px 24px",textAlign:"center"}}>
-        <p style={{fontSize:10,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(255,255,255,0.35)",fontFamily:FB}}>Thrang · Old Thrang &amp; Thrang Garth · Great Langdale Valley, Lake District</p>
+        <p style={{fontSize:10,letterSpacing:"0.22em",textTransform:"uppercase",color:"rgba(255,255,255,0.35)",fontFamily:FB}}>Thrang · Old Thrang &amp; Thrang Garth · Chapel Stile, Langdale Valley</p>
       </footer>
     </div>
   );
