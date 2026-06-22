@@ -615,7 +615,7 @@ export default function App(){
                   {Object.values(PROPERTIES).map(prop=>{
                     const sel=homeActive===prop.id;
                     return(
-                      <button key={prop.id} onClick={()=>setHomeActive(prop.id)} style={{padding:"9px 32px",border:`1px solid ${C.stone}`,borderBottom:`2px solid ${sel?C.crimson:C.stone}`,background:sel?C.parchment:C.white,color:sel?C.crimson:C.indigo,fontFamily:FF,fontSize:15,fontWeight:sel?500:400,transition:"all 0.15s",marginRight:-1}}>
+                      <button key={prop.id} onClick={()=>{setHomeActive(prop.id);setPortalActive(prop.id);}} style={{padding:"9px 32px",border:`1px solid ${C.stone}`,borderBottom:`2px solid ${sel?C.crimson:C.stone}`,background:sel?C.parchment:C.white,color:sel?C.crimson:C.indigo,fontFamily:FF,fontSize:15,fontWeight:sel?500:400,transition:"all 0.15s",marginRight:-1}}>
                         {prop.name}
                       </button>
                     );
