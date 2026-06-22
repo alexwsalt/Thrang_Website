@@ -54,7 +54,7 @@ const PROPERTIES = {
   oldThrang: {
     id: "oldThrang", name: "Old Thrang", sleeps: 7,
     tagline: "A traditional Lakeland farmhouse for up to 7 guests",
-    description: "Old Thrang is a beautifully restored Lakeland farmhouse nestled in the Great Langdale Valley. With original stone walls, oak beams, and a wood-burning stove, it blends rustic charm with modern comfort — the perfect retreat for a group looking to escape to the fells.",
+    description: "Old Thrang is a beautifully restored Lakeland farmhouse nestled in the Great Langdale Valley. With original stone walls and oak beams, it blends rustic charm with modern comfort — the perfect retreat for a group looking to escape to the fells.",
     parking: 2,
     bedrooms: [
       { name: "Bedroom 1", beds: "Double bed + 2 single beds" },
@@ -632,7 +632,7 @@ export default function App(){
             {/* Feature strip */}
             <section style={{background:C.white,borderBottom:`1px solid ${C.stone}`,padding:"52px 24px"}}>
               <div className="feature-strip-grid" style={{maxWidth:820,margin:"0 auto",display:"grid",gridTemplateColumns:"repeat(3,1fr)"}}>
-                {[["Direct fell access","Step outside onto some of England's finest walking routes."],["Private bookings only","Exclusive use — the whole property is yours for your stay."],["Authentic Lakeland","Original stone walls, oak beams, and wood-burning stoves."]].map(([title,desc],i)=>(
+                {[["Direct fell access","Step outside onto some of England's finest walking routes."],["Private bookings only","Exclusive use — the whole property is yours for your stay."],["Authentic Lakeland","Original stone walls, oak beams, and beautiful gardens."]].map(([title,desc],i)=>(
                   <div key={title} className="feature-item" style={{textAlign:"center",padding:"0 36px",borderLeft:i>0?`1px solid ${C.stone}`:"none"}}>
                     <div style={{width:24,height:1,background:C.crimson,margin:"0 auto 18px"}}/>
                     <div style={{fontSize:15,fontWeight:500,color:C.twilight,marginBottom:10,fontFamily:FF,letterSpacing:"0.02em"}}>{title}</div>
