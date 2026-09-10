@@ -538,8 +538,9 @@ export default function App(){
           .hero-title{font-size:50px!important;letter-spacing:-1px!important;}
           .hero-sub{font-size:15px!important;}
           .hero-section{min-height:380px!important;}
+          .hero-text-panel{padding:28px 24px!important;}
           .showcase-img{height:300px!important;}
-          .showcase-text{bottom:14px!important;left:14px!important;right:14px!important;}
+          .showcase-text{bottom:14px!important;left:14px!important;right:14px!important;padding:18px 20px!important;}
           .showcase-text h2{font-size:22px!important;}
           .feature-strip-grid{grid-template-columns:1fr!important;}
           .feature-item{border-left:none!important;padding-top:24px!important;border-top:1px solid ${C.stone};}
@@ -597,9 +598,7 @@ export default function App(){
             {/* Hero */}
             <section className="hero-section" style={{position:"relative",minHeight:560,display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
               <img src={imgFrontBoth} alt="Thrang" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}/>
-              <div style={{position:"absolute",inset:0,background:"linear-gradient(160deg,rgba(15,28,38,0.88) 0%,rgba(5,26,10,0.80) 100%)"}}/>
-              <div style={{position:"absolute",inset:0,background:"radial-gradient(ellipse at center,rgba(0,0,0,0.35) 0%,rgba(0,0,0,0) 65%)"}}/>
-              <div style={{position:"relative",textAlign:"center",color:"#fff",padding:"60px 24px",maxWidth:620}}>
+              <div className="hero-text-panel" style={{position:"relative",textAlign:"center",color:"#fff",padding:"48px 56px",maxWidth:620,background:"rgba(10,20,28,0.4)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",border:"1px solid rgba(255,255,255,0.14)",borderRadius:4}}>
                 <p style={{fontSize:10,letterSpacing:"0.3em",textTransform:"uppercase",color:C.frost,opacity:0.95,marginBottom:22,fontFamily:FB,textShadow:"0 1px 4px rgba(0,0,0,0.6)"}}>Chapel Stile · Langdale Valley</p>
                 <h1 className="hero-title" style={{fontSize:62,fontWeight:400,margin:"0 0 18px",letterSpacing:"0.12em",lineHeight:1.05,fontFamily:FH,textShadow:"0 2px 10px rgba(0,0,0,0.55)"}}>Thrang Properties</h1>
                 <p className="hero-sub" style={{fontSize:17,opacity:0.92,marginBottom:48,lineHeight:1.7,fontFamily:FB,fontWeight:300,textShadow:"0 1px 6px rgba(0,0,0,0.55)"}}>Two exceptional properties in the heart of the Lakeland fells</p>
@@ -624,8 +623,7 @@ export default function App(){
                 </div>
                 <div className="showcase-img" style={{position:"relative",overflow:"hidden",height:480,border:`1px solid ${C.stone}`}}>
                   <img key={homeActive} src={PROPERTY_IMAGES[homeActive]} alt={PROPERTIES[homeActive].name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
-                  <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,rgba(15,28,38,0) 8%,rgba(15,28,38,0.55) 45%,rgba(10,20,28,0.94) 78%)"}}/>
-                  <div className="showcase-text" style={{position:"absolute",bottom:36,left:40,right:40,color:"#fff"}}>
+                  <div className="showcase-text" style={{position:"absolute",bottom:24,left:24,right:24,color:"#fff",background:"rgba(10,20,28,0.42)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",border:"1px solid rgba(255,255,255,0.14)",borderRadius:4,padding:"28px 32px"}}>
                     <p style={{fontSize:10,letterSpacing:"0.26em",textTransform:"uppercase",color:C.frost,opacity:0.95,marginBottom:10,fontFamily:FB,textShadow:"0 1px 4px rgba(0,0,0,0.6)"}}>Chapel Stile · Langdale Valley</p>
                     <h2 style={{fontSize:32,fontWeight:400,margin:"0 0 12px",fontFamily:FF,letterSpacing:"0.01em",textShadow:"0 2px 8px rgba(0,0,0,0.55)"}}>{PROPERTIES[homeActive].name}</h2>
                     <p style={{fontSize:14,opacity:0.92,margin:"0 0 22px",fontFamily:FB,fontWeight:300,maxWidth:520,lineHeight:1.8,textShadow:"0 1px 6px rgba(0,0,0,0.55)"}}>{PROPERTIES[homeActive].description}</p>
