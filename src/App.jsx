@@ -538,9 +538,8 @@ export default function App(){
           .hero-title{font-size:50px!important;letter-spacing:-1px!important;}
           .hero-sub{font-size:15px!important;}
           .hero-section{min-height:380px!important;}
-          .hero-text-panel{padding:28px 24px!important;}
           .showcase-img{height:300px!important;}
-          .showcase-text{bottom:14px!important;left:14px!important;right:14px!important;padding:18px 20px!important;}
+          .showcase-text{bottom:14px!important;left:14px!important;right:14px!important;}
           .showcase-text h2{font-size:22px!important;}
           .feature-strip-grid{grid-template-columns:1fr!important;}
           .feature-item{border-left:none!important;padding-top:24px!important;border-top:1px solid ${C.stone};}
@@ -598,11 +597,11 @@ export default function App(){
             {/* Hero */}
             <section className="hero-section" style={{position:"relative",minHeight:560,display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
               <img src={imgFrontBoth} alt="Thrang" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}/>
-              <div className="hero-text-panel" style={{position:"relative",textAlign:"center",color:"#fff",padding:"48px 56px",maxWidth:620,background:"rgba(10,20,28,0.4)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",border:"1px solid rgba(255,255,255,0.14)",borderRadius:4}}>
-                <p style={{fontSize:10,letterSpacing:"0.3em",textTransform:"uppercase",color:C.frost,opacity:0.95,marginBottom:22,fontFamily:FB,textShadow:"0 1px 4px rgba(0,0,0,0.6)"}}>Chapel Stile · Langdale Valley</p>
-                <h1 className="hero-title" style={{fontSize:62,fontWeight:400,margin:"0 0 18px",letterSpacing:"0.12em",lineHeight:1.05,fontFamily:FH,textShadow:"0 2px 10px rgba(0,0,0,0.55)"}}>Thrang Properties</h1>
-                <p className="hero-sub" style={{fontSize:17,opacity:0.92,marginBottom:48,lineHeight:1.7,fontFamily:FB,fontWeight:300,textShadow:"0 1px 6px rgba(0,0,0,0.55)"}}>Two exceptional properties in the heart of the Lakeland fells</p>
-                <button onClick={()=>navigate("login")} style={{background:"transparent",color:"#fff",border:"1px solid rgba(255,255,255,0.5)",padding:"13px 40px",fontSize:13,fontFamily:FB,fontWeight:500,letterSpacing:"0.1em",textTransform:"uppercase",transition:"background 0.2s"}}>
+              <div style={{position:"relative",textAlign:"center",color:"#fff",padding:"60px 24px",maxWidth:620}}>
+                <p style={{fontSize:10,letterSpacing:"0.3em",textTransform:"uppercase",color:C.frost,marginBottom:22,fontFamily:FB,textShadow:"0 1px 2px rgba(0,0,0,0.95),0 2px 6px rgba(0,0,0,0.85)"}}>Chapel Stile · Langdale Valley</p>
+                <h1 className="hero-title" style={{fontSize:62,fontWeight:400,margin:"0 0 18px",letterSpacing:"0.12em",lineHeight:1.05,fontFamily:FH,textShadow:"0 1px 3px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,0.85),0 6px 18px rgba(0,0,0,0.7)"}}>Thrang Properties</h1>
+                <p className="hero-sub" style={{fontSize:17,marginBottom:48,lineHeight:1.7,fontFamily:FB,fontWeight:300,textShadow:"0 1px 2px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,0.8)"}}>Two exceptional properties in the heart of the Lakeland fells</p>
+                <button onClick={()=>navigate("login")} style={{background:"rgba(0,0,0,0.25)",color:"#fff",border:"1px solid rgba(255,255,255,0.65)",padding:"13px 40px",fontSize:13,fontFamily:FB,fontWeight:500,letterSpacing:"0.1em",textTransform:"uppercase",transition:"background 0.2s",textShadow:"0 1px 2px rgba(0,0,0,0.9)"}}>
                   Request a Stay
                 </button>
               </div>
@@ -623,13 +622,13 @@ export default function App(){
                 </div>
                 <div className="showcase-img" style={{position:"relative",overflow:"hidden",height:480,border:`1px solid ${C.stone}`}}>
                   <img key={homeActive} src={PROPERTY_IMAGES[homeActive]} alt={PROPERTIES[homeActive].name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
-                  <div className="showcase-text" style={{position:"absolute",bottom:24,left:24,right:24,color:"#fff",background:"rgba(10,20,28,0.42)",backdropFilter:"blur(10px)",WebkitBackdropFilter:"blur(10px)",border:"1px solid rgba(255,255,255,0.14)",borderRadius:4,padding:"28px 32px"}}>
-                    <p style={{fontSize:10,letterSpacing:"0.26em",textTransform:"uppercase",color:C.frost,opacity:0.95,marginBottom:10,fontFamily:FB,textShadow:"0 1px 4px rgba(0,0,0,0.6)"}}>Chapel Stile · Langdale Valley</p>
-                    <h2 style={{fontSize:32,fontWeight:400,margin:"0 0 12px",fontFamily:FF,letterSpacing:"0.01em",textShadow:"0 2px 8px rgba(0,0,0,0.55)"}}>{PROPERTIES[homeActive].name}</h2>
-                    <p style={{fontSize:14,opacity:0.92,margin:"0 0 22px",fontFamily:FB,fontWeight:300,maxWidth:520,lineHeight:1.8,textShadow:"0 1px 6px rgba(0,0,0,0.55)"}}>{PROPERTIES[homeActive].description}</p>
+                  <div className="showcase-text" style={{position:"absolute",bottom:36,left:40,right:40,color:"#fff"}}>
+                    <p style={{fontSize:10,letterSpacing:"0.26em",textTransform:"uppercase",color:C.frost,marginBottom:10,fontFamily:FB,textShadow:"0 1px 2px rgba(0,0,0,0.95),0 2px 6px rgba(0,0,0,0.85)"}}>Chapel Stile · Langdale Valley</p>
+                    <h2 style={{fontSize:32,fontWeight:400,margin:"0 0 12px",fontFamily:FF,letterSpacing:"0.01em",textShadow:"0 1px 3px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,0.85),0 6px 16px rgba(0,0,0,0.7)"}}>{PROPERTIES[homeActive].name}</h2>
+                    <p style={{fontSize:14,margin:"0 0 22px",fontFamily:FB,fontWeight:300,maxWidth:520,lineHeight:1.8,textShadow:"0 1px 2px rgba(0,0,0,0.95),0 2px 8px rgba(0,0,0,0.8)"}}>{PROPERTIES[homeActive].description}</p>
                     <div style={{display:"flex",alignItems:"center",gap:14,flexWrap:"wrap"}}>
-                      <span style={{border:"1px solid rgba(160,210,219,0.45)",padding:"5px 16px",fontSize:12,fontFamily:FB,letterSpacing:"0.06em",color:C.frost,textShadow:"0 1px 3px rgba(0,0,0,0.5)"}}>Sleeps {PROPERTIES[homeActive].sleeps}</span>
-                      <button onClick={()=>{setPortalActive(homeActive);navigate("login");}} style={{background:"transparent",color:"#fff",border:"1px solid rgba(255,255,255,0.45)",padding:"7px 22px",fontSize:12,fontFamily:FB,fontWeight:500,letterSpacing:"0.08em",textTransform:"uppercase"}}>Request a Stay</button>
+                      <span style={{border:"1px solid rgba(160,210,219,0.6)",padding:"5px 16px",fontSize:12,fontFamily:FB,letterSpacing:"0.06em",color:C.frost,background:"rgba(0,0,0,0.3)",textShadow:"0 1px 2px rgba(0,0,0,0.9)"}}>Sleeps {PROPERTIES[homeActive].sleeps}</span>
+                      <button onClick={()=>{setPortalActive(homeActive);navigate("login");}} style={{background:"rgba(0,0,0,0.25)",color:"#fff",border:"1px solid rgba(255,255,255,0.6)",padding:"7px 22px",fontSize:12,fontFamily:FB,fontWeight:500,letterSpacing:"0.08em",textTransform:"uppercase",textShadow:"0 1px 2px rgba(0,0,0,0.9)"}}>Request a Stay</button>
                     </div>
                   </div>
                 </div>
