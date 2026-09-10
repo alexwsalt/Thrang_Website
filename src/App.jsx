@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import imgOldThrang from "./assets/Old Thrang Back.jpg";
 import imgThrangGarth from "./assets/Thrang Garth Back.jpg";
-import imgFrontBoth from "./assets/Front Both.jpg";
+import imgFrontBoth from "./assets/Front Both No Cars.jpg";
 import logoThrang from "./assets/Thrang Properties Logo.png";
 
 const oldThrangPhotos = Object.values(import.meta.glob("./assets/Photos/Old Thrang/*.{jpg,jpeg,png,JPG,JPEG,PNG}", { eager: true, query: "?url", import: "default" }));
