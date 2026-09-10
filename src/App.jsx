@@ -627,7 +627,7 @@ export default function App(){
                   <div className="showcase-text" style={{position:"absolute",bottom:36,left:40,right:40,color:"#fff"}}>
                     <p style={{fontSize:10,letterSpacing:"0.26em",textTransform:"uppercase",color:"#fff",opacity:0.8,marginBottom:10,fontFamily:FB,fontWeight:600,textShadow:"0 2px 6px rgba(0,0,0,0.5)"}}>Chapel Stile · Langdale Valley</p>
                     <h2 style={{fontSize:32,fontWeight:600,margin:"0 0 12px",fontFamily:FF,letterSpacing:"0.01em",textShadow:"0 3px 8px rgba(0,0,0,0.5)"}}>{PROPERTIES[homeActive].name}</h2>
-                    <p style={{fontSize:14,opacity:0.8,margin:"0 0 22px",fontFamily:FB,fontWeight:500,maxWidth:520,lineHeight:1.8,textShadow:"0 2px 6px rgba(0,0,0,0.5)"}}>{PROPERTIES[homeActive].description}</p>
+                    <p style={{fontSize:14,opacity:0.95,margin:"0 0 22px",fontFamily:FB,fontWeight:500,maxWidth:520,lineHeight:1.8,textShadow:"0 2px 6px rgba(0,0,0,0.5)"}}>{PROPERTIES[homeActive].description}</p>
                     <div style={{display:"flex",alignItems:"center",gap:14,flexWrap:"wrap"}}>
                       <span style={{border:"1px solid rgba(160,210,219,0.45)",padding:"5px 16px",fontSize:12,fontFamily:FB,fontWeight:600,letterSpacing:"0.06em",color:C.frost,textShadow:"0 2px 6px rgba(0,0,0,0.5)"}}>Sleeps {PROPERTIES[homeActive].sleeps}</span>
                       <button onClick={()=>{setPortalActive(homeActive);navigate("login");}} style={{background:"transparent",color:"#fff",border:"1px solid rgba(255,255,255,0.45)",padding:"7px 22px",fontSize:12,fontFamily:FB,fontWeight:600,letterSpacing:"0.08em",textTransform:"uppercase",textShadow:"0 2px 6px rgba(0,0,0,0.5)"}}>Request a Stay</button>
