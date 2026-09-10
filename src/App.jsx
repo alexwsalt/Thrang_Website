@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import imgOldThrang from "./assets/Old Thrang Back.jpg";
-import imgThrangGarth from "./assets/Thrang Garth Back.jpg";
+import imgThrangGarth from "./assets/Thrang Garth Front.jpg";
 import imgFrontBoth from "./assets/Front Both No Cars.jpg";
 import logoThrang from "./assets/Thrang Properties Logo.png";
 
