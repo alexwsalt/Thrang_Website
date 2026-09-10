@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import imgOldThrang from "./assets/Old Thrang Back.jpg";
-import imgThrangGarth from "./assets/Thrang Garth Front.jpg";
-import imgFrontBoth from "./assets/Front Both No Cars.jpg";
+import imgThrangGarth from "./assets/Thrang Garth Back.jpg";
+import imgFrontBoth from "./assets/Front Both.jpg";
 import logoThrang from "./assets/Thrang Properties Logo.png";
 
 const oldThrangPhotos = Object.values(import.meta.glob("./assets/Photos/Old Thrang/*.{jpg,jpeg,png,JPG,JPEG,PNG}", { eager: true, query: "?url", import: "default" }));
@@ -535,13 +535,12 @@ export default function App(){
         /* Mobile */
         @media(max-width:700px){
           .portal-nav-btn{padding:5px 9px!important;font-size:12px!important;}
-          .hero-title{font-size:52px!important;letter-spacing:-1px!important;}
-          .hero-sub{font-size:16px!important;}
+          .hero-title{font-size:50px!important;letter-spacing:-1px!important;}
+          .hero-sub{font-size:15px!important;}
           .hero-section{min-height:380px!important;}
-          .hero-text-block{padding:32px 20px!important;}
           .showcase-img{height:300px!important;}
           .showcase-text{bottom:14px!important;left:14px!important;right:14px!important;}
-          .showcase-text h2{font-size:24px!important;}
+          .showcase-text h2{font-size:22px!important;}
           .feature-strip-grid{grid-template-columns:1fr!important;}
           .feature-item{border-left:none!important;padding-top:24px!important;border-top:1px solid ${C.stone};}
           .feature-item:first-child{border-top:none;}
@@ -598,11 +597,12 @@ export default function App(){
             {/* Hero */}
             <section className="hero-section" style={{position:"relative",minHeight:560,display:"flex",alignItems:"center",justifyContent:"center",overflow:"hidden"}}>
               <img src={imgFrontBoth} alt="Thrang" style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover"}}/>
-              <div className="hero-text-block" style={{position:"relative",textAlign:"center",padding:"60px 24px",maxWidth:660}}>
-                <p style={{fontSize:12,letterSpacing:"0.32em",textTransform:"uppercase",color:C.crimsonD,fontWeight:600,marginBottom:22,fontFamily:FB,textShadow:"0 0 2px #fff,0 0 6px rgba(255,255,255,0.8),0 0 12px rgba(255,255,255,0.55)"}}>Chapel Stile · Langdale Valley</p>
-                <h1 className="hero-title" style={{fontSize:74,fontWeight:600,margin:"0 0 18px",letterSpacing:"0.08em",lineHeight:1.05,fontFamily:FH,color:C.crimsonD,textShadow:"0 0 3px #fff,0 0 8px rgba(255,255,255,0.85),0 0 16px rgba(255,255,255,0.55)"}}>Thrang Properties</h1>
-                <p className="hero-sub" style={{fontSize:19,marginBottom:48,lineHeight:1.7,fontFamily:FB,fontWeight:600,color:C.twilight,textShadow:"0 0 2px #fff,0 0 6px rgba(255,255,255,0.8),0 0 12px rgba(255,255,255,0.5)"}}>Two exceptional properties in the heart of the Lakeland fells</p>
-                <button onClick={()=>navigate("login")} style={{background:"rgba(255,255,255,0.82)",color:C.crimsonD,border:`1.5px solid ${C.crimsonD}`,padding:"13px 40px",fontSize:13,fontFamily:FB,fontWeight:600,letterSpacing:"0.1em",textTransform:"uppercase",transition:"background 0.2s"}}>
+              <div style={{position:"absolute",inset:0,background:"linear-gradient(160deg,rgba(42,74,94,0.82) 0%,rgba(8,45,15,0.52) 100%)"}}/>
+              <div style={{position:"relative",textAlign:"center",color:"#fff",padding:"60px 24px",maxWidth:620}}>
+                <p style={{fontSize:10,letterSpacing:"0.3em",textTransform:"uppercase",color:C.frost,opacity:0.85,marginBottom:22,fontFamily:FB}}>Chapel Stile · Langdale Valley</p>
+                <h1 className="hero-title" style={{fontSize:62,fontWeight:400,margin:"0 0 18px",letterSpacing:"0.12em",lineHeight:1.05,fontFamily:FH}}>Thrang Properties</h1>
+                <p className="hero-sub" style={{fontSize:17,opacity:0.78,marginBottom:48,lineHeight:1.7,fontFamily:FB,fontWeight:300}}>Two exceptional properties in the heart of the Lakeland fells</p>
+                <button onClick={()=>navigate("login")} style={{background:"transparent",color:"#fff",border:"1px solid rgba(255,255,255,0.5)",padding:"13px 40px",fontSize:13,fontFamily:FB,fontWeight:500,letterSpacing:"0.1em",textTransform:"uppercase",transition:"background 0.2s"}}>
                   Request a Stay
                 </button>
               </div>
@@ -623,13 +623,14 @@ export default function App(){
                 </div>
                 <div className="showcase-img" style={{position:"relative",overflow:"hidden",height:480,border:`1px solid ${C.stone}`}}>
                   <img key={homeActive} src={PROPERTY_IMAGES[homeActive]} alt={PROPERTIES[homeActive].name} style={{width:"100%",height:"100%",objectFit:"cover"}}/>
-                  <div className="showcase-text" style={{position:"absolute",bottom:36,left:40,right:40}}>
-                    <p style={{fontSize:12,letterSpacing:"0.28em",textTransform:"uppercase",color:C.crimsonD,fontWeight:600,marginBottom:10,fontFamily:FB,textShadow:"0 0 2px #fff,0 0 6px rgba(255,255,255,0.8),0 0 12px rgba(255,255,255,0.5)"}}>Chapel Stile · Langdale Valley</p>
-                    <h2 style={{fontSize:38,fontWeight:600,margin:"0 0 12px",fontFamily:FF,letterSpacing:"0.01em",color:C.crimsonD,textShadow:"0 0 3px #fff,0 0 8px rgba(255,255,255,0.85),0 0 16px rgba(255,255,255,0.5)"}}>{PROPERTIES[homeActive].name}</h2>
-                    <p style={{fontSize:15,margin:"0 0 22px",fontFamily:FB,fontWeight:600,color:C.twilight,maxWidth:520,lineHeight:1.8,textShadow:"0 0 2px #fff,0 0 6px rgba(255,255,255,0.8),0 0 12px rgba(255,255,255,0.5)"}}>{PROPERTIES[homeActive].description}</p>
+                  <div style={{position:"absolute",inset:0,background:"linear-gradient(to bottom,transparent 28%,rgba(42,74,94,0.90))"}}/>
+                  <div className="showcase-text" style={{position:"absolute",bottom:36,left:40,right:40,color:"#fff"}}>
+                    <p style={{fontSize:10,letterSpacing:"0.26em",textTransform:"uppercase",color:C.frost,opacity:0.8,marginBottom:10,fontFamily:FB}}>Chapel Stile · Langdale Valley</p>
+                    <h2 style={{fontSize:32,fontWeight:400,margin:"0 0 12px",fontFamily:FF,letterSpacing:"0.01em"}}>{PROPERTIES[homeActive].name}</h2>
+                    <p style={{fontSize:14,opacity:0.8,margin:"0 0 22px",fontFamily:FB,fontWeight:300,maxWidth:520,lineHeight:1.8}}>{PROPERTIES[homeActive].description}</p>
                     <div style={{display:"flex",alignItems:"center",gap:14,flexWrap:"wrap"}}>
-                      <span style={{border:`1.5px solid ${C.crimsonD}`,padding:"5px 16px",fontSize:12,fontFamily:FB,fontWeight:600,letterSpacing:"0.06em",color:C.crimsonD,background:"rgba(255,255,255,0.82)"}}>Sleeps {PROPERTIES[homeActive].sleeps}</span>
-                      <button onClick={()=>{setPortalActive(homeActive);navigate("login");}} style={{background:"rgba(255,255,255,0.82)",color:C.crimsonD,border:`1.5px solid ${C.crimsonD}`,padding:"7px 22px",fontSize:12,fontFamily:FB,fontWeight:600,letterSpacing:"0.08em",textTransform:"uppercase"}}>Request a Stay</button>
+                      <span style={{border:"1px solid rgba(160,210,219,0.45)",padding:"5px 16px",fontSize:12,fontFamily:FB,letterSpacing:"0.06em",color:C.frost}}>Sleeps {PROPERTIES[homeActive].sleeps}</span>
+                      <button onClick={()=>{setPortalActive(homeActive);navigate("login");}} style={{background:"transparent",color:"#fff",border:"1px solid rgba(255,255,255,0.45)",padding:"7px 22px",fontSize:12,fontFamily:FB,fontWeight:500,letterSpacing:"0.08em",textTransform:"uppercase"}}>Request a Stay</button>
                     </div>
                   </div>
                 </div>
