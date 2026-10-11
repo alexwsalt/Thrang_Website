@@ -10,9 +10,12 @@ const PROPERTY_PHOTOS = { oldThrang: oldThrangPhotos, thrangGarth: thrangGarthPh
 
 const PROPERTY_IMAGES = { oldThrang: imgOldThrang, thrangGarth: imgThrangGarth };
 const APPS_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbwHoZPrD6ue8kPhoo_Hu0G5pAomHe9Exrp3lSaBerWiX9RLsKecKp3hp1-egAZXptsVDg/exec";
+  "https://script.google.com/macros/s/AKfycbyIGgOBX9paKooqeGJOeQ8mo17Ts4OL5oc2ZHCHo-dw6VmjUJ4MO0hDTmGANVDJuI25_g/exec";
 
-const API_EVENTS = APPS_SCRIPT_URL;
+// Apps Script expects action=getEvents
+const API_EVENTS = `${APPS_SCRIPT_URL}?action=getEvents`;
+
+// Booking requests POST directly to the script
 const API_BOOKING = APPS_SCRIPT_URL;
 /* ─── Colour palette ────────────────────────────────────────────────────── */
 const C = {
