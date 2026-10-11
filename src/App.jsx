@@ -12,7 +12,7 @@ const PROPERTY_IMAGES = { oldThrang: imgOldThrang, thrangGarth: imgThrangGarth }
 const APPS_SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbwHoZPrD6ue8kPhoo_Hu0G5pAomHe9Exrp3lSaBerWiX9RLsKecKp3hp1-egAZXptsVDg/exec";
 
-const API_EVENTS = `${APPS_SCRIPT_URL}?action=events`;
+const API_EVENTS = APPS_SCRIPT_URL;
 const API_BOOKING = APPS_SCRIPT_URL;
 /* ─── Colour palette ────────────────────────────────────────────────────── */
 const C = {
