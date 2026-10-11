@@ -9,10 +9,11 @@ const thrangGarthPhotos = Object.values(import.meta.glob("./assets/Photos/Thrang
 const PROPERTY_PHOTOS = { oldThrang: oldThrangPhotos, thrangGarth: thrangGarthPhotos };
 
 const PROPERTY_IMAGES = { oldThrang: imgOldThrang, thrangGarth: imgThrangGarth };
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyIGgOBX9paKooqeGJOeQ8mo17Ts4OL5oc2ZHCHo-dw6VmjUJ4MO0hDTmGANVDJuI25_g/exec";
-const API_EVENTS  = "/api/events";
-const API_BOOKING = "/api/booking";
+const APPS_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbwHoZPrD6ue8kPhoo_Hu0G5pAomHe9Exrp3lSaBerWiX9RLsKecKp3hp1-egAZXptsVDg/exec";
 
+const API_EVENTS = `${APPS_SCRIPT_URL}?action=events`;
+const API_BOOKING = APPS_SCRIPT_URL;
 /* ─── Colour palette ────────────────────────────────────────────────────── */
 const C = {
   main:       "#3A6480",   // Lake District blue — primary brand / interactive
