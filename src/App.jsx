@@ -677,7 +677,6 @@ export default function App(){
                 Enter
               </button>
               <button onClick={()=>navigate("home")} style={{background:"none",border:"none",color:C.warm,fontSize:12,fontFamily:FB,letterSpacing:"0.04em"}}>← Back to home</button>
-              <p style={{fontSize:10,color:C.sand,marginTop:20,fontFamily:FB,letterSpacing:"0.04em"}}>Access code: <code style={{background:C.parchment,padding:"2px 7px",color:C.indigo,fontFamily:"monospace"}}>{ACCESS_PASSWORD}</code></p>
             </div>
           </div>
         )}
