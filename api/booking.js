@@ -1,5 +1,5 @@
 // Proxies POST booking submissions to the Apps Script Web App.
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwHoZPrD6ue8kPhoo_Hu0G5pAomHe9Exrp3lSaBerWiX9RLsKecKp3hp1-egAZXptsVDg/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyIGgOBX9paKooqeGJOeQ8mo17Ts4OL5oc2ZHCHo-dw6VmjUJ4MO0hDTmGANVDJuI25_g/exec";
 
 export const config = { api: { bodyParser: false } };
 
